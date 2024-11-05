@@ -1,6 +1,36 @@
 from django.templatetags.static import static
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
+import environ
+
+env = environ.Env(DEBUG=(bool, False))
+
+MAIN_COLOR_CODE = env("MAIN_COLOR_CODE", default="000000")
+
+def hex_to_rgb(hex_code):
+    hex_code = hex_code.lstrip('#')
+    return tuple(int(hex_code[i:i+2], 16) for i in (0, 2, 4))
+
+start_rgb = hex_to_rgb(MAIN_COLOR_CODE)
+end_rgb = (255, 255, 255)
+steps = [950, 900, 800, 700, 600, 500, 400, 300, 200, 100, 50, 0]
+
+def generate_color_gradients(start_rgb, end_rgb, steps):
+    color_dict = {}
+    
+    r_delta = (end_rgb[0] - start_rgb[0]) / (len(steps) - 1)
+    g_delta = (end_rgb[1] - start_rgb[1]) / (len(steps) - 1)
+    b_delta = (end_rgb[2] - start_rgb[2]) / (len(steps) - 1)
+
+    for i, step in enumerate(steps):
+        r = round(start_rgb[0] + r_delta * i)
+        g = round(start_rgb[1] + g_delta * i)
+        b = round(start_rgb[2] + b_delta * i)
+        color_dict[str(step)] = f"{r} {g} {b}"
+
+    return color_dict
+
+color_dict = generate_color_gradients(start_rgb, end_rgb, steps)
 
 unfold_settings = {
     "SITE_TITLE": "대시보드",
@@ -41,19 +71,7 @@ unfold_settings = {
         lambda request: static("js/script.js"),
     ],
     "COLORS": {
-        "primary": {
-            "50": "240 245 255",
-            "100": "230 235 255",
-            "200": "210 220 255",
-            "300": "180 200 255",
-            "400": "140 170 255",
-            "500": "100 140 255",
-            "600": "70 110 255",
-            "700": "50 90 255",
-            "800": "30 70 255",
-            "900": "20 50 255",
-            "950": "10 30 255",
-        },
+        "primary": color_dict,
     },
     "EXTENSIONS": {
         "modeltranslation": {
@@ -94,7 +112,7 @@ unfold_settings = {
                         "title": _("로그"),
                         "icon": "history",
                         "link": reverse_lazy("admin:admin_logentry_changelist"),
-                        # "permission": "sodam.views.admin_permission_callback",
+                        # "permission": "dashboard.views.admin_permission_callback",
                     },
                 ],
             },
@@ -133,7 +151,7 @@ unfold_settings = {
                     "title": _("허가"),
                     "icon": "lock",
                     "link": reverse_lazy("admin:auth_permission_changelist"),
-                    # "permission": "sodam.views.admin_permission_callback",
+                    # "permission": "dashboard.views.admin_permission_callback",
                 },
             ],
         },

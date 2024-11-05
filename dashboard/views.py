@@ -5,6 +5,7 @@ from user.models import User
 from utils.timezone_utils import get_start_of_today
 import json
 from dashboard.settings import SERVER_MODE
+from dashboard.unfold import color_dict
 
 
 def index(request):
@@ -39,7 +40,7 @@ def dashboard_callback(request: HttpRequest, context) -> Dict:
                 "datasets": [
                     {
                         "label": "매출",
-                        "backgroundColor": "rgba(196, 209, 197, 1)",
+                        "backgroundColor": "rgba(80, 80, 242, 1)",
                         "data": [
                             20372365,
                             21077579,
@@ -53,7 +54,7 @@ def dashboard_callback(request: HttpRequest, context) -> Dict:
                     },
                     {
                         "label": "매입",
-                        "backgroundColor": "rgba(201, 157, 202, 1)",
+                        "backgroundColor": "rgba(196, 209, 197, 1)",
                         "data": [
                             13751566,
                             16303560,
@@ -134,7 +135,7 @@ def dashboard_callback(request: HttpRequest, context) -> Dict:
                             [1, 20],
                             [1, 10],
                         ],
-                        "borderColor": "rgba(147, 51, 234, 0.7)",
+                        "borderColor": f"rgba(47, 51, 234, 0.7)",
                     }
                 ],
             }

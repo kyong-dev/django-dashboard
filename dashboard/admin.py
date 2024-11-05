@@ -74,7 +74,7 @@ class LogEntryAdmin(ModelAdmin):
         return obj.object_repr
 
     object_link.allow_tags = True
-    object_link.short_description = _("object")
+    object_link.short_description = _("객체")
 
     def has_add_permission(self, request):
         return False
