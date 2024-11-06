@@ -7,17 +7,20 @@ env = environ.Env(DEBUG=(bool, False))
 
 MAIN_COLOR_CODE = env("MAIN_COLOR_CODE", default="000000")
 
+
 def hex_to_rgb(hex_code):
-    hex_code = hex_code.lstrip('#')
-    return tuple(int(hex_code[i:i+2], 16) for i in (0, 2, 4))
+    hex_code = hex_code.lstrip("#")
+    return tuple(int(hex_code[i : i + 2], 16) for i in (0, 2, 4))
+
 
 start_rgb = hex_to_rgb(MAIN_COLOR_CODE)
 end_rgb = (255, 255, 255)
 steps = [950, 900, 800, 700, 600, 500, 400, 300, 200, 100, 50, 0]
 
+
 def generate_color_gradients(start_rgb, end_rgb, steps):
     color_dict = {}
-    
+
     r_delta = (end_rgb[0] - start_rgb[0]) / (len(steps) - 1)
     g_delta = (end_rgb[1] - start_rgb[1]) / (len(steps) - 1)
     b_delta = (end_rgb[2] - start_rgb[2]) / (len(steps) - 1)
@@ -29,6 +32,7 @@ def generate_color_gradients(start_rgb, end_rgb, steps):
         color_dict[str(step)] = f"{r} {g} {b}"
 
     return color_dict
+
 
 color_dict = generate_color_gradients(start_rgb, end_rgb, steps)
 
