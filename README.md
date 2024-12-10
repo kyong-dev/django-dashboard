@@ -79,6 +79,83 @@ pip install black
 black .
 ```
 
+### Pip Upgrader
+
+Upgrade all packages at once
+
+```bash
+pip install pip-upgrader
+pip-upgrade requirements.txt
+```
+
+```bash
+Available upgrades:
++------+-----------------+-----------------+----------------+---------------------+
+| No.  | Package         | Current version | Latest version | Release date        |
++------+-----------------+-----------------+----------------+---------------------+
+|  1   |  bcrypt         | 4.2.0           | 4.2.1          | 2024-11-19 20:07:21 |
+|  2   |  boto3          | 1.35.54         | 1.35.77        | 2024-12-09 20:46:19 |
+|  3   |  botocore       | 1.35.54         | 1.35.77        | 2024-12-09 20:46:02 |
+|  4   |  cryptography   | 43.0.3          | 44.0.0         | 2024-11-27 18:05:55 |
+|  5   |  django         | 5.1.2           | 5.1.4          | 2024-12-04 15:09:01 |
+|  6   |  django-unfold  | 0.40.0          | 0.43.0         | 2024-12-09 15:55:39 |
+|  7   |  packaging      | 24.1            | 24.2           | 2024-11-08 09:47:44 |
+|  8   |  s3transfer     | 0.10.3          | 0.10.4         | 2024-11-20 21:06:03 |
+|  9   |  six            | 1.16.0          | 1.17.0         | 2024-12-04 17:35:26 |
+|  10  |  sqlparse       | 0.5.1           | 0.5.2          | 2024-11-14 10:06:25 |
++------+-----------------+-----------------+----------------+---------------------+
+```
+
+### Django Debug Toolbar
+
+How to set up Django Debug Toolbar in your Django project.
+
+```bash
+pip install django-debug-toolbar
+```
+
+settings.py
+```python
+INSTALLED_APPS = [
+    # ... other installed apps in settings.py...
+    'debug_toolbar',
+]
+# ...
+
+MIDDLEWARE = [
+    # ... other middlewares in settings.py...
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+]
+
+# ...
+INTERNAL_IPS = [
+    "127.0.0.1",
+    "localhost",
+]
+```
+
+urls.py
+```python
+from django.conf import settings
+from django.urls import include, path
+from django.contrib import admin
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    # other URLs...
+]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns
+```
+
+```bash
+python manage.py collectstatic
+```
+
 
 ### ER Diagram
 

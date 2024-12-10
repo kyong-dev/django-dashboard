@@ -23,6 +23,8 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import routers, permissions
 
+import debug_toolbar
+
 router = routers.DefaultRouter()
 
 schema_view = get_schema_view(
@@ -67,3 +69,6 @@ if settings.DEBUG:
             name="schema-redoc",
         ),
     ]
+    urlpatterns += [
+        path("__debug__/", include(debug_toolbar.urls)),
+    ] + urlpatterns

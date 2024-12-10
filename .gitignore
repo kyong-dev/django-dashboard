@@ -176,3 +176,5 @@ tmp/
 
 # dump sql file
 *.sql
+
+requirements.in

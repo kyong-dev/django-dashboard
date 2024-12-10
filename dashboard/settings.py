@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "debug_toolbar",
     "dashboard",
     "drf_yasg",
     "rest_framework",
@@ -68,6 +69,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "dashboard.urls"
@@ -171,3 +173,8 @@ CLOUDWATCH_AWS_KEY = env("AWS_SECRET_ACCESS_KEY")
 AWS_DEFAULT_REGION = env("AWS_S3_REGION_NAME")
 
 s3_client = boto3.client("s3")
+
+INTERNAL_IPS = [
+    "localhost",
+    "127.0.0.1",
+]
