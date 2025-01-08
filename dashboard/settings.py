@@ -140,6 +140,7 @@ TIME_ZONE = "Asia/Seoul"
 USE_I18N = True
 USE_L10N = True
 THOUSAND_SEPARATOR = ","
+USE_THOUSAND_SEPARATOR = True
 
 
 # Static files (CSS, JavaScript, Images)
