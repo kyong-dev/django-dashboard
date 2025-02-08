@@ -26,3 +26,4 @@ class UserAdmin(ModelAdmin):
     list_display = ("username", "email", "is_staff", "registered_at")
     readonly_fields = ("registered_at",)
     search_fields = ("username", "email")
+    list_editable = ("is_staff",)

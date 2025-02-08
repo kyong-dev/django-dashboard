@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.html import format_html
 from django.urls import reverse
 from unfold.admin import ModelAdmin
+import json
 
 
 admin.site.site_header = "대시보드"
@@ -133,33 +134,90 @@ class PermissionAdmin(ModelAdmin):
         return True
 
 
+def parse_action_string(action_string, action_flag):
+    try:
+        if action_flag == 1:
+            return "오브젝트가 추가되었습니다."
+        if action_flag == 3:
+            return "오브젝트가 삭제되었습니다."
+
+        data = json.loads(action_string)
+        results = []
+
+        for entry in data:
+            if "added" in entry and "name" in entry["added"]:
+                object = entry["added"]["object"]
+                results.append(f"'{object}'를 추가하였습니다.")
+
+            elif "deleted" in entry and "name" in entry["deleted"]:
+                object = entry["deleted"]["object"]
+                results.append(f"'{object}'를 삭제하였습니다.")
+
+            elif "changed" in entry and "fields" in entry["changed"]:
+                for change in entry["changed"]["fields"]:
+                    if "[" not in change:
+                        results.append(f"'{change}' 필드를 변경하였습니다.")
+                    else:
+                        field_name = change.split("[")[1].split("]")[0]
+                        old_value, new_value = change.split("=>")
+                        old_value = old_value.split('"')[-2]
+                        new_value = new_value.split('"')[-2]
+                        if field_name == "비밀번호":
+                            results.append(f"'{field_name}' 필드를 변경하였습니다.")
+                        else:
+                            results.append(f"'{field_name}' 필드의 '{old_value}'에서 '{new_value}'로 변경하였습니다.")
+        return "\n".join(results)
+
+    except json.JSONDecodeError:
+        return "유효하지 않은 JSON 형식입니다."
+    except Exception as e:
+        return action_string
+
 @admin.register(LogEntry)
 class LogEntryAdmin(ModelAdmin):
-    list_display = ("action_time", "user", "content_type", "object_link", "action_flag", "change_message")
-    list_filter = ("user", "content_type", "action_flag")
-    search_fields = ("object_repr", "change_message")
-    readonly_fields = ("action_time", "user", "content_type", "object_id", "object_repr", "action_flag", "change_message")
+    class Media:
+        css = {
+            'all': ('dashboard/css/logentry_admin.css',)
+        }
 
-    def object_link(self, obj):
-        if obj.action_flag == ADDITION:
-            return format_html('<a href="{}">{}</a>', reverse("admin:%s_%s_change" % (obj.content_type.app_label, obj.content_type.model), args=[obj.object_id]), obj.object_repr)
-        elif obj.action_flag == CHANGE:
-            return format_html('<a href="{}">{}</a>', reverse("admin:%s_%s_change" % (obj.content_type.app_label, obj.content_type.model), args=[obj.object_id]), obj.object_repr)
-        elif obj.action_flag == DELETION:
-            return format_html("<span>{}</span>", obj.object_repr)
-        return obj.object_repr
-
-    object_link.allow_tags = True
-    object_link.short_description = _("객체")
+    list_display = ['action_time_str', 'username', 'object_repr_str', 'action_flag_str', 'change_message_str']
+    list_filter = ['action_time', 'action_flag']
+    search_fields = ['object_repr', 'user__username']
 
     def has_add_permission(self, request):
         return False
-
+    
     def has_change_permission(self, request, obj=None):
         return False
-
+    
     def has_delete_permission(self, request, obj=None):
         return False
+    
+    def action_time_str(self, obj):
+        return obj.action_time.strftime('%Y-%m-%d %H:%M')
+    
+    def username(self, obj):
+        return obj.user.username
 
-    def has_view_or_change_permission(self, request, obj=None):
-        return True
+    def action_flag_str(self, obj):
+        if obj.action_flag == 1:
+            return "추가"
+        elif obj.action_flag == 2:
+            return "변경"
+        elif obj.action_flag == 3:
+            return "삭제"
+        return "-"
+
+    def object_repr_str(self, obj):
+        return format_html('<a style="color: blue;" href="{0}">{1}</a>', obj.get_admin_url(), obj.object_repr[:30] + "...")
+
+    def change_message_str(self, obj):
+        field_change = f"{obj.user.username}님이 {obj.content_type.app_label}탭의 ID: {obj.object_id}의 "
+        field_change += parse_action_string(obj.change_message, obj.action_flag)
+        return field_change
+
+    action_time_str.short_description = _('시간')
+    action_flag_str.short_description = _('액션')
+    username.short_description = _('관리자')
+    change_message_str.short_description = _('수정내용')
+    object_repr_str.short_description = _('수정대상')
