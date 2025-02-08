@@ -1,0 +1,16 @@
+{% extends "admin/change_list.html" %}
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .column-change_message_str {
+        width: 55%;
+    }
+</style>
+{% endblock %}
+
+{% block object-tools %}
+    {{ block.super }}
+{% endblock object-tools %}
+{% block search %}
+{{ block.super }}
+{% endblock %}

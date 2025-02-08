@@ -16,6 +16,7 @@ admin.site.index_title = "대시보드"
 
 admin.site.unregister(Group)
 
+
 class ModelAdmin(ModelAdmin):
     def getLogMessage(self, form, add=False, formsetObj=None):
         """
@@ -26,23 +27,24 @@ class ModelAdmin(ModelAdmin):
         change_message = []
 
         if formsetObj is not None:
-            data = {'name': str(formsetObj._meta.verbose_name_plural),
-                    'object': f"{str(formsetObj)}({formsetObj.pk})", }
+            data = {
+                "name": str(formsetObj._meta.verbose_name_plural),
+                "object": f"{str(formsetObj)}({formsetObj.pk})",
+            }
         if add:
-            change_message.append({'added': data})
+            change_message.append({"added": data})
         elif form.changed_data:
-            
+
             message = []
             for field in changed_data:
                 initial = form.initial[field]
                 cleaned_data = form.cleaned_data[field]
-                
-                message.append(
-                    f"""[{form.fields[field].label}] "{str(initial)}" => "{str(cleaned_data)}" """)
-            data['fields'] = message
-            change_message.append({'changed': data})
+
+                message.append(f"""[{form.fields[field].label}] "{str(initial)}" => "{str(cleaned_data)}" """)
+            data["fields"] = message
+            change_message.append({"changed": data})
         return change_message
-	
+
     def construct_change_message(self, request, form, formsets, add=False):
         """
         Construct a JSON structure describing changes from a changed
@@ -52,44 +54,43 @@ class ModelAdmin(ModelAdmin):
         if formsets:
             for formset in formsets:
                 formList = {}
-                
-                pkName = ''
+
+                pkName = ""
                 if formset.__len__() > 0:
                     pkName = formset.forms[0]._meta.model._meta.pk.name
-                    
+
                 for singleform in formset.forms:
                     try:
                         obj = singleform.cleaned_data[pkName]
-                        
-                        if(obj is None):
+
+                        if obj is None:
                             obj = singleform.initial.get(pkName)
-                            
-                        if(obj is not None):
+
+                        if obj is not None:
                             formList[getattr(obj, pkName)] = singleform
                     except Exception as e:
                         print(e)
 
                 for added_object in formset.new_objects:
-                    message = self.getLogMessage(
-                        None, True, formsetObj=added_object)
+                    message = self.getLogMessage(None, True, formsetObj=added_object)
                     change_message += message
-        
+
                 for changed_object, changed_fields in formset.changed_objects:
                     singleForm = formList[changed_object.pk]
-                    message = self.getLogMessage(
-                        singleForm, False, formsetObj=changed_object)
+                    message = self.getLogMessage(singleForm, False, formsetObj=changed_object)
                     change_message += message
-                    
-                    self.log_change(request, changed_object,
-                                    self.getLogMessage(singleForm, False))
-                                    
+
+                    self.log_change(request, changed_object, self.getLogMessage(singleForm, False))
+
                 for deleted_object in formset.deleted_objects:
-                    change_message.append({
-                        'deleted': {
-                            'name': str(deleted_object._meta.verbose_name_plural),
-                            'object': str(deleted_object),
+                    change_message.append(
+                        {
+                            "deleted": {
+                                "name": str(deleted_object._meta.verbose_name_plural),
+                                "object": str(deleted_object),
+                            }
                         }
-                    })
+                    )
         return change_message
 
 
@@ -107,7 +108,7 @@ class GroupAdmin(ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         return qs.prefetch_related("permissions")
-    
+
 
 @admin.register(Permission)
 class PermissionAdmin(ModelAdmin):
@@ -173,29 +174,26 @@ def parse_action_string(action_string, action_flag):
     except Exception as e:
         return action_string
 
+
 @admin.register(LogEntry)
 class LogEntryAdmin(ModelAdmin):
-    class Media:
-        css = {
-            'all': ('dashboard/css/logentry_admin.css',)
-        }
-
-    list_display = ['action_time_str', 'username', 'object_repr_str', 'action_flag_str', 'change_message_str']
-    list_filter = ['action_time', 'action_flag']
-    search_fields = ['object_repr', 'user__username']
+    list_display = ["action_time_str", "username", "object_repr_str", "action_flag_str", "change_message_str"]
+    list_filter = ["action_time", "action_flag"]
+    search_fields = ["object_repr", "user__username"]
+    change_list_template = "admin/log/logentry_changelist.html"
 
     def has_add_permission(self, request):
         return False
-    
+
     def has_change_permission(self, request, obj=None):
         return False
-    
+
     def has_delete_permission(self, request, obj=None):
         return False
-    
+
     def action_time_str(self, obj):
-        return obj.action_time.strftime('%Y-%m-%d %H:%M')
-    
+        return obj.action_time.strftime("%Y-%m-%d %H:%M")
+
     def username(self, obj):
         return obj.user.username
 
@@ -216,8 +214,8 @@ class LogEntryAdmin(ModelAdmin):
         field_change += parse_action_string(obj.change_message, obj.action_flag)
         return field_change
 
-    action_time_str.short_description = _('시간')
-    action_flag_str.short_description = _('액션')
-    username.short_description = _('관리자')
-    change_message_str.short_description = _('수정내용')
-    object_repr_str.short_description = _('수정대상')
+    action_time_str.short_description = _("시간")
+    action_flag_str.short_description = _("액션")
+    username.short_description = _("관리자")
+    change_message_str.short_description = _("수정내용")
+    object_repr_str.short_description = _("수정대상")
