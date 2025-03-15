@@ -41,6 +41,7 @@ filelock==3.18.0
 identify==2.6.9
 idna==3.10
 inflection==0.5.1
+isort==6.0.1
 jmespath==1.0.1
 kombu==5.5.0
 mccabe==0.7.0

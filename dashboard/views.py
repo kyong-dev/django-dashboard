@@ -1,11 +1,13 @@
-from django.shortcuts import render
-from typing import Dict
-from django.http import HttpRequest
-from user.models import User
-from utils.timezone_utils import get_start_of_today
 import json
+from typing import Dict
+
+from django.http import HttpRequest
+from django.shortcuts import render
+
 from dashboard.settings import SERVER_MODE
 from dashboard.unfold import color_dict
+from user.models import User
+from utils.timezone_utils import get_start_of_today
 
 
 def index(request):

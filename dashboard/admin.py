@@ -1,13 +1,14 @@
-from django.contrib import admin
-from django.contrib.auth.models import Group, Permission
-from django.utils.translation import gettext_lazy as _
-from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
-from django.contrib.contenttypes.models import ContentType
-from django.utils.html import format_html
-from django.urls import reverse
-from unfold.admin import ModelAdmin
 import json
 
+from django.contrib import admin
+from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
+from django.urls import reverse
+from django.utils.html import format_html
+from django.utils.translation import gettext_lazy as _
+
+from unfold.admin import ModelAdmin
 
 admin.site.site_header = "대시보드"
 admin.site.site_title = "대시보드"
