@@ -37,7 +37,7 @@ DEBUG = env.bool("DEBUG_MODE")
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 SERVER_URL = env("SERVER_URL")
 SERVER_MODE = env("SERVER_MODE")
-
+ADMIN_REDIRECT_URL = "/admin/"
 
 # Application definition
 INSTALLED_APPS = [
@@ -76,6 +76,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
+    "dashboard.middleware.Admin404RedirectMiddleware",
 ]
 
 CORS_ALLOWED_ORIGINS = [
