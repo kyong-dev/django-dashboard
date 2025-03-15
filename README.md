@@ -156,6 +156,45 @@ if settings.DEBUG:
 python manage.py collectstatic
 ```
 
+### Django Browser Reload
+
+How to set up Django Browser Reload in your Django project.
+
+```bash
+pip install django-browser-reload
+```
+
+settings.py
+```python
+INSTALLED_APPS = [
+    # ... other installed apps in settings.py...
+    'django_browser_reload',
+]
+# ...
+
+MIDDLEWARE = [
+    # ... other middlewares in settings.py...
+    'django_browser_reload.middleware.BrowserReloadMiddleware',
+]
+```
+
+urls.py
+```python
+from django.conf import settings
+from django.urls import include, path
+from django.contrib import admin
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    # other URLs...
+]
+
+if settings.DEBUG:
+    urlpatterns += [
+        path("__reload__/", include("django_browser_reload.urls")),
+    ]
+```
+
 
 ### ER Diagram
 
