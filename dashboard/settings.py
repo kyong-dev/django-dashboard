@@ -137,13 +137,17 @@ AUTH_USER_MODEL = "user.User"
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LOCALE_PATHS = [
+    BASE_DIR / "locale",
+]
 
-LANGUAGE_CODE = "ko"
-USE_TZ = True
-TIME_ZONE = "Asia/Seoul"
 USE_I18N = True
 USE_L10N = True
+LANGUAGE_CODE = "ko-ko"  # 기본 언어를 설정 (예: 한국어)
+
+
+USE_TZ = True
+TIME_ZONE = "Asia/Seoul"
 THOUSAND_SEPARATOR = ","
 USE_THOUSAND_SEPARATOR = True
 
