@@ -182,6 +182,9 @@ STORAGES = {
 }
 
 STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
 
 CLOUDWATCH_AWS_ID = env("AWS_ACCESS_KEY_ID")
