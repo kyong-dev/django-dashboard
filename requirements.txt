@@ -35,7 +35,7 @@ django-import-export==4.3.7
 django-ninja==1.4.3
 django-storages==1.14.6
 django-timezone-field==7.1
-django-unfold-patrick==0.60.0.3
+django-unfold-patrick==0.62.0.3
 djangorestframework==3.16.0
 djangorestframework_simplejwt==5.5.0
 docopt==0.6.2
@@ -54,6 +54,7 @@ mccabe==0.7.0
 msgpack==1.1.1
 mypy_extensions==1.1.0
 nodeenv==1.9.1
+numpy==2.3.0
 openpyxl==3.1.5
 packaging==25.0
 paramiko==3.5.1
