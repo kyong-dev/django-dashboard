@@ -1,3 +1,5 @@
+import time
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
@@ -29,3 +31,7 @@ class UserAdmin(ModelAdmin):
     readonly_fields = ("registered_at",)
     search_fields = ("username", "email")
     list_editable = ("is_staff",)
+    actions = ("make_staff",)
+
+    def make_staff(self, request, queryset):
+        time.sleep(5)
