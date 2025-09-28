@@ -8,19 +8,19 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from .models import User
-from .serializers import UserListSerializer, UserSerializer
+from ...models import User
+from ...serializers import UserListSerializer, UserSerializer
 
 # Create your views here.
 
 
 @extend_schema_view(
-    list=extend_schema(tags=["app"], summary="사용자 목록 조회", description="모든 사용자 목록을 조회합니다. 페이지네이션이 적용됩니다."),
-    create=extend_schema(tags=["app"], summary="새 사용자 생성", description="새로운 사용자를 생성합니다."),
-    retrieve=extend_schema(tags=["app"], summary="사용자 상세 조회", description="특정 사용자의 상세 정보를 조회합니다."),
-    update=extend_schema(tags=["app"], summary="사용자 정보 수정", description="사용자 정보를 전체 수정합니다."),
-    partial_update=extend_schema(tags=["app"], summary="사용자 정보 부분 수정", description="사용자 정보를 부분적으로 수정합니다."),
-    destroy=extend_schema(tags=["app"], summary="사용자 삭제", description="사용자를 삭제합니다."),
+    list=extend_schema(tags=["app-user"], summary="사용자 목록 조회", description="모든 사용자 목록을 조회합니다. 페이지네이션이 적용됩니다."),
+    create=extend_schema(tags=["app-user"], summary="새 사용자 생성", description="새로운 사용자를 생성합니다."),
+    retrieve=extend_schema(tags=["app-user"], summary="사용자 상세 조회", description="특정 사용자의 상세 정보를 조회합니다."),
+    update=extend_schema(tags=["app-user"], summary="사용자 정보 수정", description="사용자 정보를 전체 수정합니다."),
+    partial_update=extend_schema(tags=["app-user"], summary="사용자 정보 부분 수정", description="사용자 정보를 부분적으로 수정합니다."),
+    destroy=extend_schema(tags=["app-user"], summary="사용자 삭제", description="사용자를 삭제합니다."),
 )
 class UserViewSet(ModelViewSet):
     """
@@ -43,7 +43,7 @@ class UserViewSet(ModelViewSet):
         return User.objects.filter(is_active=True)
 
     @extend_schema(
-        tags=["app"],
+        tags=["app-user"],
         summary="사용자 활성화/비활성화",
         description="사용자 계정을 활성화하거나 비활성화합니다.",
         parameters=[OpenApiParameter(name="id", type=OpenApiTypes.INT, location=OpenApiParameter.PATH, description="사용자 ID")],
@@ -65,7 +65,7 @@ class UserViewSet(ModelViewSet):
         return Response({"status": status_text, "message": message})
 
     @extend_schema(
-        tags=["app"],
+        tags=["app-user"],
         summary="사용자 통계",
         description="사용자 관련 통계 정보를 조회합니다.",
         responses={200: {"description": "통계 조회 성공", "examples": {"application/json": {"total_users": 100, "active_users": 85, "inactive_users": 15, "staff_users": 5, "superuser_count": 1}}}},

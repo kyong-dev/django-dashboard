@@ -21,14 +21,13 @@ from django.shortcuts import redirect
 from django.urls import include, path
 
 import debug_toolbar
-from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from drf_spectacular.views import SpectacularRedocView
 from rest_framework import routers
 
 from .schema_views import *
-from .views import AdminUserViewSet
 
 router = routers.DefaultRouter()
-router.register(r"admin/users", AdminUserViewSet, basename="admin-user")
+# AdminUserViewSet은 이제 user/views/user/admin.py로 이동됨
 
 
 def index(request):
@@ -38,8 +37,7 @@ def index(request):
 urlpatterns = [
     path("", index),
     path("admin/", admin.site.urls),
-    path("user/", include("user.urls")),
-    path("api/", include(router.urls)),
+    path("api/user/", include("user.urls")),
 ]
 
 if settings.DEBUG:

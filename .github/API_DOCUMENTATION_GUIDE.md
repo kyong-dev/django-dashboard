@@ -3,6 +3,7 @@
 이 문서는 Django REST Framework와 DRF Spectacular를 사용한 **고급 API 문서화 시스템** 가이드입니다.
 
 ## � 목차
+
 1. [빠른 시작](#-빠른-시작)
 2. [아키텍처 개요](#-아키텍처-개요)
 3. [태그 기반 분류 시스템](#-태그-기반-분류-시스템)
@@ -15,14 +16,14 @@
 
 ### 1. API 문서 접근 URL
 
-| 카테고리 | URL | 설명 | 대상 사용자 |
-|----------|-----|------|------------|
-| **전체 API** | `/swagger/` | 모든 API 통합 뷰 | 개발자 |
-| **App API** | `/swagger/app/` | 일반 앱 기능 API | 프론트엔드 개발자 |
-| **Admin API** | `/swagger/admin/` | 관리자 전용 API | 백엔드/관리자 |
-| **External API** | `/swagger/external/` | 외부 연동 API | 외부 개발자 |
+| 카테고리         | URL                  | 설명             | 대상 사용자       |
+| ---------------- | -------------------- | ---------------- | ----------------- |
+| **전체 API**     | `/swagger/`          | 모든 API 통합 뷰 | 개발자            |
+| **App API**      | `/swagger/app/`      | 일반 앱 기능 API | 프론트엔드 개발자 |
+| **Admin API**    | `/swagger/admin/`    | 관리자 전용 API  | 백엔드/관리자     |
+| **External API** | `/swagger/external/` | 외부 연동 API    | 외부 개발자       |
 
-### 2. 드롭다운 네비게이션 
+### 2. 드롭다운 네비게이션
 
 각 Swagger 페이지 상단에는 **카테고리 전환 드롭다운**이 있어 빠른 이동이 가능합니다.
 
@@ -34,7 +35,7 @@ graph TB
     B --> C[Schema Views]
     C --> D[CategoryAPISchemaView]
     D --> E[AppAPISchemaView]
-    D --> F[AdminAPISchemaView] 
+    D --> F[AdminAPISchemaView]
     D --> G[ExternalAPISchemaView]
     E --> H[App Swagger UI]
     F --> I[Admin Swagger UI]
@@ -57,18 +58,18 @@ graph TB
 ```python
 # 예시: admin 태그는 다음을 모두 포함
 admin          # 기본 관리자 API
-admin-user     # 사용자 관리 API  
+admin-user     # 사용자 관리 API
 admin-order    # 주문 관리 API
 admin-product  # 상품 관리 API
 ```
 
 ### 📊 카테고리별 태그 매핑
 
-| 카테고리 | 기본 태그 | 확장 태그 | 설명 |
-|----------|-----------|-----------|------|
-| **App** | `app`, `user` | `app-*`, `user-*` | 일반 사용자 대상 기능 |
-| **Admin** | `admin`, `management` | `admin-*`, `management-*` | 관리자 전용 기능 |
-| **External** | `external`, `public` | `external-*`, `public-*` | 외부 연동 및 공개 API |
+| 카테고리     | 기본 태그             | 확장 태그                 | 설명                  |
+| ------------ | --------------------- | ------------------------- | --------------------- |
+| **App**      | `app`, `user`         | `app-*`, `user-*`         | 일반 사용자 대상 기능 |
+| **Admin**    | `admin`, `management` | `admin-*`, `management-*` | 관리자 전용 기능      |
+| **External** | `external`, `public`  | `external-*`, `public-*`  | 외부 연동 및 공개 API |
 
 ### 🎯 태그 설명 시스템
 
@@ -95,42 +96,42 @@ from rest_framework.viewsets import ModelViewSet
 
 @extend_schema_view(
     list=extend_schema(
-        tags=['admin-user'], 
-        summary='[관리자] 모든 사용자 조회', 
+        tags=['admin-user'],
+        summary='[관리자] 모든 사용자 조회',
         description='관리자용 - 비활성 사용자 포함 모든 사용자를 조회합니다.'
     ),
     create=extend_schema(
-        tags=['admin-user'], 
-        summary='[관리자] 사용자 생성', 
+        tags=['admin-user'],
+        summary='[관리자] 사용자 생성',
         description='관리자용 - 새로운 사용자를 생성합니다.'
     ),
     retrieve=extend_schema(
-        tags=['admin-user'], 
-        summary='[관리자] 사용자 상세 조회', 
+        tags=['admin-user'],
+        summary='[관리자] 사용자 상세 조회',
         description='관리자용 - 특정 사용자의 상세 정보를 조회합니다.'
     ),
     update=extend_schema(
-        tags=['admin-user'], 
-        summary='[관리자] 사용자 정보 수정', 
+        tags=['admin-user'],
+        summary='[관리자] 사용자 정보 수정',
         description='관리자용 - 사용자 정보를 전체 수정합니다.'
     ),
     partial_update=extend_schema(
-        tags=['admin-user'], 
-        summary='[관리자] 사용자 정보 부분 수정', 
+        tags=['admin-user'],
+        summary='[관리자] 사용자 정보 부분 수정',
         description='관리자용 - 사용자 정보를 부분적으로 수정합니다.'
     ),
     destroy=extend_schema(
-        tags=['admin-user'], 
-        summary='[관리자] 사용자 삭제', 
+        tags=['admin-user'],
+        summary='[관리자] 사용자 삭제',
         description='관리자용 - 사용자를 삭제합니다.'
     ),
 )
 class AdminUserViewSet(ModelViewSet):
     """
     👥 관리자용 사용자 관리 ViewSet
-    
+
     시스템의 모든 사용자를 관리할 수 있는 관리자 전용 API입니다.
-    
+
     🔐 권한 요구사항: 관리자 권한 필요
     🛡️ 보안: 모든 API는 관리자 인증이 필요합니다
     """
@@ -146,12 +147,12 @@ class AdminUserViewSet(ModelViewSet):
     summary='[관리자] 사용자 강제 비활성화',
     description="""
     **관리자 전용** - 사용자를 강제로 비활성화합니다.
-    
+
     ### 🎯 사용 목적
     - 문제 사용자 계정 비활성화
     - 임시 계정 정지
     - 삭제 대신 안전한 계정 관리
-    
+
     ### 🔄 처리 과정
     1. `is_active`를 `False`로 변경
     2. `deactivated_at` 시간 기록
@@ -179,6 +180,7 @@ def force_deactivate(self, request, pk=None):
     # 구현 로직
     pass
 ```
+
     ## 🏗️ 스키마 뷰 구조
 
 ### 📦 CategoryAPISchemaView (베이스 클래스)
@@ -190,9 +192,9 @@ def force_deactivate(self, request, pk=None):
 class CategoryAPISchemaView(SpectacularAPIView):
     category_tags = []           # 필터링할 태그 목록
     schema_title = ""           # 스키마 제목
-    schema_description = ""     # 스키마 설명  
+    schema_description = ""     # 스키마 설명
     tag_descriptions = {}       # 태그별 상세 설명
-    
+
     def get(self, request, *args, **kwargs):
         """🔍 접두사 기반 태그 필터링 및 동적 태그 설명 추가"""
         # 1. 전체 스키마 생성
@@ -200,7 +202,7 @@ class CategoryAPISchemaView(SpectacularAPIView):
         # 3. 모든 자식 클래스의 tag_descriptions 수집
         # 4. 사용된 태그에만 설명 추가
         pass
-        
+
     def _get_combined_tag_descriptions(self):
         """🔗 모든 스키마 뷰 클래스의 태그 설명 통합"""
         pass
@@ -213,7 +215,7 @@ class CategoryAPISchemaView(SpectacularAPIView):
 ```python
 class AppAPISchemaView(CategoryAPISchemaView):
     category_tags = ['app', 'user']
-    schema_title = 'App APIs' 
+    schema_title = 'App APIs'
     schema_description = '일반 애플리케이션 API 문서'
     tag_descriptions = {
         'app': '📱 일반 앱 API - 사용자가 직접 사용하는 기본 기능들',
@@ -221,7 +223,7 @@ class AppAPISchemaView(CategoryAPISchemaView):
     }
 
 class AdminAPISchemaView(CategoryAPISchemaView):
-    category_tags = ['admin', 'management'] 
+    category_tags = ['admin', 'management']
     schema_title = 'Admin APIs'
     schema_description = '관리자 전용 API 문서'
     tag_descriptions = {
@@ -242,7 +244,7 @@ class CustomSwaggerView(SpectacularSwaggerView):
     """🎛️ 드롭다운 네비게이션이 있는 커스텀 Swagger 뷰"""
     custom_schema_url_name = None
     custom_title = None
-    
+
 class AdminAPIsSwaggerView(CustomSwaggerView):
     custom_schema_url_name = 'admin-schema'
     custom_title = 'Admin APIs'
@@ -258,16 +260,16 @@ class AdminAPIsSwaggerView(CustomSwaggerView):
 def _get_combined_tag_descriptions(self):
     """🔗 모든 스키마 뷰 클래스의 tag_descriptions를 합쳐서 반환"""
     combined = {}
-    
+
     # 현재 클래스의 tag_descriptions 추가
     combined.update(self.tag_descriptions)
-    
+
     # 다른 스키마 뷰 클래스들도 합침
     schema_classes = [AppAPISchemaView, AdminAPISchemaView, ExternalAPISchemaView]
     for schema_class in schema_classes:
         if hasattr(schema_class, 'tag_descriptions'):
             combined.update(schema_class.tag_descriptions)
-    
+
     return combined
 ```
 
@@ -276,12 +278,13 @@ def _get_combined_tag_descriptions(self):
 각 카테고리에서는 **실제로 사용되는 태그에만** 설명이 표시됩니다:
 
 - **App API**: `app`, `user` 태그 설명만 표시
-- **Admin API**: `admin-user`, `admin-order` 등 관리자 태그 설명만 표시  
+- **Admin API**: `admin-user`, `admin-order` 등 관리자 태그 설명만 표시
 - **External API**: `external`, `public` 태그 설명만 표시
-class UserViewSet(ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-```
+  class UserViewSet(ModelViewSet):
+  queryset = User.objects.all()
+  serializer_class = UserSerializer
+
+````
 
 ### 개별 액션에 태그 설정
 
@@ -306,13 +309,13 @@ class AdminUserViewSet(ModelViewSet):
         user.is_active = not user.is_active
         user.save()
         return Response({'status': 'active' if user.is_active else 'inactive'})
-```
+````
 
 ## 🔧 APIView에서 Swagger 작성
 
 ### 기본 APIView
 
-```python
+````python
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
@@ -329,7 +332,7 @@ class UserStatsView(APIView):
 # config/settings.py
 SPECTACULAR_SETTINGS = {
     "TITLE": "Django Dashboard API",
-    "DESCRIPTION": "API documentation for Django Dashboard application", 
+    "DESCRIPTION": "API documentation for Django Dashboard application",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "SCHEMA_PATH_PREFIX": r"/api/v[0-9]",
@@ -337,7 +340,7 @@ SPECTACULAR_SETTINGS = {
     "SERVE_PERMISSIONS": ["rest_framework.permissions.AllowAny"],
     "SERVE_AUTHENTICATION": [],
     "SWAGGER_UI_DIST": "SIDECAR",
-    "SWAGGER_UI_FAVICON_HREF": "SIDECAR", 
+    "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
     "REDOC_DIST": "SIDECAR",
     "SWAGGER_UI_SETTINGS": {
         "deepLinking": True,
@@ -346,7 +349,7 @@ SPECTACULAR_SETTINGS = {
         "displayRequestDuration": True,
         "filter": True,
         "showExtensions": True,
-        "showCommonExtensions": True, 
+        "showCommonExtensions": True,
         "tryItOutEnabled": True,
         "defaultModelsExpandDepth": 1,
         "defaultModelExpandDepth": 1,
@@ -356,7 +359,7 @@ SPECTACULAR_SETTINGS = {
     "SORT_OPERATIONS": False,
     # ❌ TAGS 설정 제거됨 - 각 스키마 뷰에서 개별 관리
 }
-```
+````
 
 ### �️ URL 구성
 
@@ -370,14 +373,14 @@ from .schema_views import (
 schema_patterns = [
     # 🌐 스키마 JSON 엔드포인트
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/schema/app/', AppAPISchemaView.as_view(), name='app-schema'), 
+    path('api/schema/app/', AppAPISchemaView.as_view(), name='app-schema'),
     path('api/schema/admin/', AdminAPISchemaView.as_view(), name='admin-schema'),
     path('api/schema/external/', ExternalAPISchemaView.as_view(), name='external-schema'),
-    
+
     # 🎨 Swagger UI 엔드포인트
     path('swagger/', AllAPIsSwaggerView.as_view(), name='swagger-ui'),
     path('swagger/app/', AppAPIsSwaggerView.as_view(), name='app-swagger-ui'),
-    path('swagger/admin/', AdminAPIsSwaggerView.as_view(), name='admin-swagger-ui'), 
+    path('swagger/admin/', AdminAPIsSwaggerView.as_view(), name='admin-swagger-ui'),
     path('swagger/external/', ExternalAPIsSwaggerView.as_view(), name='external-swagger-ui'),
 ]
 ```
@@ -387,7 +390,7 @@ schema_patterns = [
 ```
 config/
 ├── schema_views.py      # 🏗️ 스키마 뷰 클래스들
-├── views.py            # 🎯 API ViewSet들  
+├── views.py            # 🎯 API ViewSet들
 ├── urls.py             # 🛤️ URL 패턴
 └── settings.py         # ⚙️ Django 설정
 
