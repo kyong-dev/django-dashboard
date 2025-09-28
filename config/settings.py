@@ -57,8 +57,9 @@ INSTALLED_APPS = [
     "django_browser_reload",
     "debug_toolbar",
     "corsheaders",
-    "dashboard",
-    "drf_yasg",
+    "config",
+    "drf_spectacular",
+    "drf_spectacular_sidecar",
     "rest_framework",
     "django_extensions",
     "storages",
@@ -76,7 +77,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
-    "dashboard.middleware.Admin404RedirectMiddleware",
+    "config.middleware.Admin404RedirectMiddleware",
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -85,15 +86,50 @@ CORS_ALLOWED_ORIGINS = [
     # * https://pypi.org/project/django-cors-headers/
 ]
 
-ROOT_URLCONF = "dashboard.urls"
+ROOT_URLCONF = "config.urls"
 
-WSGI_APPLICATION = "dashboard.wsgi.application"
+WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
+}
+
+REST_FRAMEWORK = {"DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema"}
+
+# DRF Spectacular settings
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Django Dashboard API",
+    "DESCRIPTION": "API documentation for Django Dashboard application",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SCHEMA_PATH_PREFIX": r"/api/v[0-9]",
+    "DEFAULT_GENERATOR_CLASS": "drf_spectacular.generators.SchemaGenerator",
+    "SERVE_PERMISSIONS": ["rest_framework.permissions.AllowAny"],
+    "SERVE_AUTHENTICATION": [],
+    "SWAGGER_UI_DIST": "SIDECAR",  # shorthand to use the sidecar instead
+    "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
+    "REDOC_DIST": "SIDECAR",
+    # Available SwaggerUI configuration parameters
+    # https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "persistAuthorization": True,
+        "displayOperationId": False,
+        "displayRequestDuration": True,
+        "filter": True,
+        "showExtensions": True,
+        "showCommonExtensions": True,
+        "tryItOutEnabled": True,
+        "defaultModelsExpandDepth": 1,
+        "defaultModelExpandDepth": 1,
+        "docExpansion": "list",
+    },
+    "COMPONENT_SPLIT_REQUEST": True,
+    "SORT_OPERATIONS": False,
+    "TAG_SORTER": lambda x: x,  # 태그 정렬 방식
 }
 
 TIMEOUT = 600
@@ -174,10 +210,10 @@ AWS_S3_FILE_OVERWRITE = False
 
 STORAGES = {
     "default": {
-        "BACKEND": "dashboard.storages.MediaStorage",
+        "BACKEND": "config.storages.MediaStorage",
     },
     "staticfiles": {
-        "BACKEND": "dashboard.storages.StaticStorage",
+        "BACKEND": "config.storages.StaticStorage",
     },
 }
 

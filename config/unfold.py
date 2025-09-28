@@ -62,8 +62,8 @@ unfold_settings = {
     ],
     "SHOW_HISTORY": True,  # show/hide "History" button, default: True
     "SHOW_VIEW_ON_SITE": True,  # show/hide "View on site" button, default: True
-    "ENVIRONMENT": "dashboard.views.environment_callback",  # "Development", "Staging", "Production"
-    "DASHBOARD_CALLBACK": "dashboard.views.dashboard_callback",
+    "ENVIRONMENT": "config.views.environment_callback",  # "Development", "Staging", "Production"
+    "DASHBOARD_CALLBACK": "config.views.dashboard_callback",
     # "THEME": "dark", # Force theme: "dark" or "light". Will disable theme switcher
     "LOGIN": {
         # "image": lambda request: static("sample/login-bg.jpg"),
@@ -106,7 +106,7 @@ unfold_settings = {
                         "title": _("사용자"),
                         "icon": "person",
                         "link": reverse_lazy("admin:user_user_changelist"),
-                        # "badge": "dashboard.views.user_badge_callback",
+                        # "badge": "config.views.user_badge_callback",
                     },
                     {
                         "title": _("그룹"),
@@ -117,7 +117,7 @@ unfold_settings = {
                         "title": _("로그"),
                         "icon": "history",
                         "link": reverse_lazy("admin:admin_logentry_changelist"),
-                        # "permission": "dashboard.views.admin_permission_callback",
+                        # "permission": "config.views.admin_permission_callback",
                     },
                 ],
             },
@@ -156,7 +156,7 @@ unfold_settings = {
                     "title": _("허가"),
                     "icon": "lock",
                     "link": reverse_lazy("admin:auth_permission_changelist"),
-                    # "permission": "dashboard.views.admin_permission_callback",
+                    # "permission": "config.views.admin_permission_callback",
                 },
             ],
         },

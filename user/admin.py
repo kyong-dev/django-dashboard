@@ -5,7 +5,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 from django.utils.translation import gettext_lazy as _
 
-from dashboard.admin import ModelAdmin
+from config.admin import ModelAdmin
 
 from .models import User
 
