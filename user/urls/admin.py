@@ -10,3 +10,4 @@ router.register(r"users", AdminUserViewSet, basename="admin-users")
 urlpatterns = [
     path("", include(router.urls)),
 ]
+# Test comment for GitHub Actions

@@ -1,0 +1,31 @@
+# .github/workflows/test.yml
+name: Test Workflow
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🎉 테스트 시작
+        run: |
+          echo "🎉 GitHub Actions 테스트가 시작되었습니다!"
+          echo "브랜치: ${{ github.ref_name }}"
+          echo "이벤트: ${{ github.event_name }}"
+          echo "액터: ${{ github.actor }}"
+
+      - name: 📂 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: 📋 파일 목록
+        run: |
+          echo "📁 현재 디렉토리 구조:"
+          ls -la
+          echo ""
+          echo "🐍 Python 파일들:"
+          find . -name "*.py" | head -10

@@ -1,64 +1,137 @@
 name: API Documentation Version Control
 
 on:
+  workflow_dispatch:  # 🔄 수동 실행 가능하도록 추가
+    inputs:
+      force_run:
+        description: '강제 실행 여부'
+        required: false
+        default: 'false'
   push:
-    branches: [main, develop]
+    branches: [main, develop, master]
+    paths: 
+      - '**/views/**'
+      - '**/serializers.py' 
+      - '**/urls/**'
+      - 'user/**'
+  pull_request:
+    branches: [main, develop, master]
     paths:
-      - "**/views/**"
-      - "**/serializers.py"
-      - "**/urls.py"
+      - '**/views/**'
+      - '**/serializers.py'
+      - '**/urls/**'
+      - 'user/**'
 
 jobs:
   api-version-check:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.11
-
-      - name: Install dependencies
-        run: |
+    - name: 🔄 Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+        token: ${{ secrets.GITHUB_TOKEN }}  # 명시적으로 토큰 추가
+    
+    - name: 🐍 Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: 📦 Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then
           pip install -r requirements.txt
-
-      - name: Generate API Schema
-        run: |
-          python manage.py spectacular --color --file api-schema-new.json
-
-      - name: Check API Changes
-        run: |
-          if [ -f "api-schema-old.json" ]; then
-            if ! diff -q api-schema-old.json api-schema-new.json > /dev/null; then
-              echo "🔄 API 스키마 변경 감지됨!"
-              echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
-            else
-              echo "✅ API 스키마 변경사항 없음"
-              echo "SCHEMA_CHANGED=false" >> $GITHUB_ENV
-            fi
-          else
-            echo "🆕 첫 번째 스키마 생성"
+        else
+          echo "⚠️ requirements.txt not found"
+          pip install django djangorestframework drf-spectacular
+        fi
+        
+    - name: 🔧 Django Setup Check
+      env:
+        DJANGO_SETTINGS_MODULE: config.settings  # Django 설정 모듈 명시
+      run: |
+        echo "🔍 Django 설정 확인 중..."
+        python manage.py check || echo "⚠️ Django check failed"
+        
+    - name: 📋 Generate API Schema
+      env:
+        DJANGO_SETTINGS_MODULE: config.settings
+      run: |
+        echo "📊 API 스키마 생성 중..."
+        mkdir -p api-docs
+        python manage.py spectacular --color --file api-docs/schema-new.json || echo "⚠️ Schema generation failed"
+        
+    - name: 🔍 Check API Changes
+      run: |
+        echo "🔄 API 변경사항 확인 중..."
+        if [ -f "api-docs/schema-old.json" ]; then
+          if ! diff -q api-docs/schema-old.json api-docs/schema-new.json > /dev/null 2>&1; then
+            echo "🔄 API 스키마 변경 감지됨!"
             echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
+            echo "::notice::API 스키마가 변경되었습니다."
+          else
+            echo "✅ API 스키마 변경사항 없음"
+            echo "SCHEMA_CHANGED=false" >> $GITHUB_ENV
           fi
+        else
+          echo "🆕 첫 번째 스키마 생성"
+          echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
+        fi
+        
+    - name: 📝 Update Changelog
+      if: env.SCHEMA_CHANGED == 'true'
+      run: |
+        echo "📝 변경 이력 업데이트 중..."
+        mkdir -p docs
+        if [ ! -f docs/API_CHANGELOG.md ]; then
+          echo "# API 변경 이력" > docs/API_CHANGELOG.md
+          echo "" >> docs/API_CHANGELOG.md
+        fi
+        echo "## API Changes - $(date '+%Y-%m-%d %H:%M:%S')" >> docs/API_CHANGELOG.md
+        echo "- **브랜치**: ${{ github.ref_name }}" >> docs/API_CHANGELOG.md
+        echo "- **커밋**: [\`${{ github.sha }}\`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})" >> docs/API_CHANGELOG.md
+        echo "- **작성자**: ${{ github.actor }}" >> docs/API_CHANGELOG.md
+        echo "- **변경된 파일들**:" >> docs/API_CHANGELOG.md
+        git diff --name-only HEAD~1 | grep -E '\.(py)$' | sed 's/^/  - /' >> docs/API_CHANGELOG.md || echo "  - 변경된 Python 파일 없음" >> docs/API_CHANGELOG.md
+        echo "" >> docs/API_CHANGELOG.md
+        
+    - name: 💾 Commit changes
+      if: env.SCHEMA_CHANGED == 'true'
+      run: |
+        echo "💾 변경사항 커밋 중..."
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        
+        # 스키마 파일 업데이트
+        if [ -f "api-docs/schema-new.json" ]; then
+          cp api-docs/schema-new.json api-docs/schema-old.json
+          git add api-docs/schema-old.json
+        fi
+        
+        # 변경 로그 추가
+        git add docs/API_CHANGELOG.md
+        
+        # 커밋 (변경사항이 있을 때만)
+        if ! git diff --staged --quiet; then
+          git commit -m "📝 Update API schema and changelog
 
-      - name: Update Changelog
-        if: env.SCHEMA_CHANGED == 'true'
-        run: |
-          echo "## API Changes - $(date)" >> API_CHANGELOG.md
-          echo "- Updated at: $(date)" >> API_CHANGELOG.md
-          echo "- Commit: ${{ github.sha }}" >> API_CHANGELOG.md
-          echo "" >> API_CHANGELOG.md
+Auto-generated by GitHub Actions
+- Branch: ${{ github.ref_name }}
+- Commit: ${{ github.sha }}
+- Timestamp: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          
+          # Push (권한이 있는 경우에만)
+          git push || echo "⚠️ Push failed - 권한을 확인하세요"
+        else
+          echo "ℹ️ 커밋할 변경사항이 없습니다"
+        fi
 
-      - name: Commit changes
-        if: env.SCHEMA_CHANGED == 'true'
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          mv api-schema-new.json api-schema-old.json
-          git add api-schema-old.json API_CHANGELOG.md
-          git commit -m "📝 Update API schema and changelog" || exit 0
-          git push
+    - name: 📊 Summary
+      run: |
+        echo "## 🎉 워크플로우 완료!" 
+        echo "- **브랜치**: ${{ github.ref_name }}"
+        echo "- **트리거**: ${{ github.event_name }}"
+        echo "- **스키마 변경**: ${SCHEMA_CHANGED:-false}"
+        echo "- **시간**: $(date)"
