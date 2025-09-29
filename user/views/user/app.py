@@ -20,7 +20,7 @@ from ...serializers import UserListSerializer, UserSerializer
     retrieve=extend_schema(tags=["app-user"], summary="사용자 상세 조회", description="특정 사용자의 상세 정보를 조회합니다."),
     update=extend_schema(tags=["app-user"], summary="사용자 정보 수정", description="사용자 정보를 전체 수정합니다."),
     partial_update=extend_schema(tags=["app-user"], summary="사용자 정보 부분 수정", description="사용자 정보를 부분적으로 수정합니다."),
-    destroy=extend_schema(tags=["app-user"], summary="사용자 비활성화", description="사용자를 삭제합니다."),
+    destroy=extend_schema(tags=["app-user"], summary="사용자 삭제", description="사용자를 삭제합니다."),
 )
 class UserViewSet(ModelViewSet):
     """
