@@ -8,5 +8,5 @@ router = DefaultRouter()
 router.register(r"users", ExternalUserViewSet, basename="external-users")
 
 urlpatterns = [
-    path("api/", include(router.urls)),
+    path("", include(router.urls)),
 ]

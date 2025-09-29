@@ -178,3 +178,6 @@ tmp/
 *.sql
 
 requirements.in
+
+static/
+media/

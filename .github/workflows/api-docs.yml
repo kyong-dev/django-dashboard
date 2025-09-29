@@ -1,0 +1,64 @@
+name: API Documentation Version Control
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - "**/views/**"
+      - "**/serializers.py"
+      - "**/urls.py"
+
+jobs:
+  api-version-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Generate API Schema
+        run: |
+          python manage.py spectacular --color --file api-schema-new.json
+
+      - name: Check API Changes
+        run: |
+          if [ -f "api-schema-old.json" ]; then
+            if ! diff -q api-schema-old.json api-schema-new.json > /dev/null; then
+              echo "🔄 API 스키마 변경 감지됨!"
+              echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
+            else
+              echo "✅ API 스키마 변경사항 없음"
+              echo "SCHEMA_CHANGED=false" >> $GITHUB_ENV
+            fi
+          else
+            echo "🆕 첫 번째 스키마 생성"
+            echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
+          fi
+
+      - name: Update Changelog
+        if: env.SCHEMA_CHANGED == 'true'
+        run: |
+          echo "## API Changes - $(date)" >> API_CHANGELOG.md
+          echo "- Updated at: $(date)" >> API_CHANGELOG.md
+          echo "- Commit: ${{ github.sha }}" >> API_CHANGELOG.md
+          echo "" >> API_CHANGELOG.md
+
+      - name: Commit changes
+        if: env.SCHEMA_CHANGED == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          mv api-schema-new.json api-schema-old.json
+          git add api-schema-old.json API_CHANGELOG.md
+          git commit -m "📝 Update API schema and changelog" || exit 0
+          git push
