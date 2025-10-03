@@ -1,0 +1,33 @@
+{% extends "emails/base.html" %} {% block content %}
+<h2>🎉 회원가입을 환영합니다!</h2>
+
+<p>안녕하세요, <strong>{{ full_name }}</strong>님!</p>
+
+<p>{{ platform_name }} 회원이 되신 것을 진심으로 환영합니다.</p>
+
+<div class="info-box">
+  <strong>가입 정보</strong>
+  <ul>
+    <li><strong>사용자명:</strong> {{ username }}</li>
+    <li><strong>가입일:</strong> {% now "Y년 m월 d일" %}</li>
+  </ul>
+</div>
+
+<p>이제 다양한 서비스를 이용하실 수 있습니다:</p>
+<ul>
+  <li>✨ 개인화된 대시보드</li>
+  <li>📊 실시간 데이터 분석</li>
+  <li>🔔 맞춤형 알림 서비스</li>
+  <li>🤝 커뮤니티 참여</li>
+</ul>
+
+<div style="text-align: center">
+  <a href="{{ settings.FRONTEND_URL }}/dashboard" class="button">
+    대시보드로 이동하기
+  </a>
+</div>
+
+<p>궁금하신 사항이 있으시면 언제든지 고객센터로 문의해주세요.</p>
+
+<p>감사합니다.<br />{{ platform_name }} 팀 드림</p>
+{% endblock %}

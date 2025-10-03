@@ -1,0 +1,42 @@
+{% extends "emails/base.html" %} {% block content %}
+<h2>🔔 새로운 로그인이 감지되었습니다</h2>
+
+<p>안녕하세요, <strong>{{ username }}</strong>님!</p>
+
+<p>귀하의 계정에 새로운 로그인 활동이 감지되었습니다.</p>
+
+<div class="info-box">
+  <strong>로그인 정보</strong>
+  <ul>
+    <li><strong>일시:</strong> {% now "Y년 m월 d일 H:i:s" %}</li>
+    <li><strong>IP 주소:</strong> {{ ip_address }}</li>
+    <li><strong>디바이스:</strong> {{ device_info }}</li>
+  </ul>
+</div>
+
+<div class="warning-box">
+  <strong>⚠️ 본인의 로그인이 아니라면?</strong>
+  <p>위 로그인 활동이 귀하의 것이 아니라면, 즉시 다음 조치를 취해주세요:</p>
+  <ul>
+    <li>1. 비밀번호를 즉시 변경하세요</li>
+    <li>2. 다른 기기에서 모든 세션을 로그아웃하세요</li>
+    <li>3. 고객센터에 문의하여 계정 보안을 강화하세요</li>
+  </ul>
+</div>
+
+<div style="text-align: center">
+  <a href="{{ settings.FRONTEND_URL }}/settings/security" class="button">
+    보안 설정으로 이동
+  </a>
+</div>
+
+<p>계정 보안을 위해 다음 사항을 권장합니다:</p>
+<ul>
+  <li>✅ 강력한 비밀번호 사용</li>
+  <li>✅ 정기적인 비밀번호 변경</li>
+  <li>✅ 2단계 인증 활성화</li>
+  <li>✅ 의심스러운 활동 즉시 신고</li>
+</ul>
+
+<p>감사합니다.</p>
+{% endblock %}
