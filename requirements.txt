@@ -41,9 +41,12 @@ django-extensions==4.1
 django-import-export==4.3.10
 django-ninja==1.4.3
 django-storages==1.14.6
+django-stubs==5.2.7
+django-stubs-ext==5.2.7
 django-timezone-field==7.1
 django-unfold-patrick==0.68.0
 djangorestframework==3.16.1
+djangorestframework-stubs==3.16.4
 djangorestframework_simplejwt==5.5.1
 docopt==0.6.2
 drf-spectacular==0.28.0
@@ -72,6 +75,7 @@ MarkupSafe==3.0.3
 mccabe==0.7.0
 msgpack==1.1.1
 multidict==6.6.4
+mypy==1.18.2
 mypy_extensions==1.1.0
 nodeenv==1.9.1
 numpy==2.3.3
@@ -97,7 +101,7 @@ pybase64==1.4.2
 pycodestyle==2.14.0
 pycparser==2.23
 pydantic==2.11.10
-pydantic_core==2.40.1
+pydantic_core==2.33.2
 pydotplus==2.0.2
 pyflakes==3.4.0
 PyJWT==2.10.1
@@ -122,6 +126,8 @@ soupsieve==2.8
 sqlparse==0.5.3
 tablib==3.8.0
 terminaltables==3.1.10
+types-PyYAML==6.0.12.20250915
+types-requests==2.32.4.20250913
 typing-inspection==0.4.2
 typing_extensions==4.15.0
 tzdata==2025.2

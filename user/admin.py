@@ -1,8 +1,11 @@
 import time
+from typing import Any
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
+from django.db.models import QuerySet
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
 from config.admin import ModelAdmin
@@ -33,5 +36,5 @@ class UserAdmin(ModelAdmin):
     list_editable = ("is_staff",)
     actions = ("make_staff",)
 
-    def make_staff(self, request, queryset):
+    def make_staff(self, request: HttpRequest, queryset: QuerySet[User]) -> None:
         time.sleep(5)

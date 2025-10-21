@@ -18,6 +18,11 @@ import environ
 
 from .unfold import unfold_settings
 
+# Django-stubs monkeypatch for better type checking
+import django_stubs_ext
+
+django_stubs_ext.monkeypatch()
+
 # Load environment variables from .env file
 env = environ.Env(DEBUG=(bool, False))
 

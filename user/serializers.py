@@ -1,3 +1,5 @@
+from typing import Any
+
 from drf_spectacular.utils import OpenApiExample, extend_schema_serializer
 from rest_framework import serializers
 
@@ -46,7 +48,7 @@ class UserSerializer(serializers.ModelSerializer):
             "deactivated_at": {"read_only": True},
         }
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict[str, Any]) -> User:
         """사용자 생성 시 비밀번호 해싱"""
         password = validated_data.pop("password")
         user = User.objects.create_user(**validated_data)
@@ -54,7 +56,7 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-    def update(self, instance, validated_data):
+    def update(self, instance: User, validated_data: dict[str, Any]) -> User:
         """사용자 정보 업데이트"""
         password = validated_data.pop("password", None)
 

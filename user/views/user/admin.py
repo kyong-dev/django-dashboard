@@ -1,6 +1,7 @@
 import json
-from typing import Dict
+from typing import Any, Dict
 
+from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.shortcuts import render
 
@@ -8,6 +9,7 @@ from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
 from config.settings import SERVER_MODE
@@ -36,7 +38,7 @@ class AdminUserViewSet(ModelViewSet):
     queryset = User.objects.all()  # 모든 사용자 (비활성 포함)
     serializer_class = UserSerializer
 
-    def get_serializer_class(self):
+    def get_serializer_class(self) -> type[Serializer]:
         """액션에 따라 다른 Serializer 사용"""
         if self.action == "list":
             return UserListSerializer
@@ -49,7 +51,7 @@ class AdminUserViewSet(ModelViewSet):
         responses={200: {"description": "비활성화 성공", "examples": {"application/json": {"message": "사용자가 비활성화되었습니다.", "deactivated_at": "2023-01-20T14:25:00Z"}}}},
     )
     @action(detail=True, methods=["post"])
-    def force_deactivate(self, request, pk=None):
+    def force_deactivate(self, request: Any, pk: int | None = None) -> Response:
         """관리자용 - 사용자 강제 비활성화"""
         from django.utils import timezone
 
@@ -74,7 +76,7 @@ class AdminUserViewSet(ModelViewSet):
         },
     )
     @action(detail=False, methods=["get"])
-    def system_stats(self, request):
+    def system_stats(self, request: Any) -> Response:
         """관리자용 - 시스템 통계"""
         from datetime import timedelta
 

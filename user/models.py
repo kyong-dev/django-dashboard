@@ -1,10 +1,12 @@
+from typing import Any
+
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
-class UserManager(BaseUserManager):
-    def create_user(self, username, email=None, password=None, **extra_fields):
+class UserManager(BaseUserManager["User"]):
+    def create_user(self, username: str, email: str | None = None, password: str | None = None, **extra_fields: Any) -> "User":
         if not username:
             raise ValueError("The Username field must be set")
         email = self.normalize_email(email)
@@ -13,7 +15,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, email=None, password=None, **extra_fields):
+    def create_superuser(self, username: str, email: str | None = None, password: str | None = None, **extra_fields: Any) -> "User":
         user = self.create_user(
             username=username,
             password=password,
@@ -35,7 +37,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     registered_at = models.DateTimeField(auto_now_add=True, verbose_name=_("가입일시"))
     deactivated_at = models.DateTimeField(blank=True, null=True, verbose_name=_("비활성화일시"))
 
-    objects = UserManager()
+    objects: UserManager = UserManager()
 
     USERNAME_FIELD = "username"
 

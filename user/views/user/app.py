@@ -1,4 +1,7 @@
+from typing import Any
+
 from django.contrib.auth import get_user_model
+from django.db.models import QuerySet
 from django.shortcuts import render
 
 from drf_spectacular.types import OpenApiTypes
@@ -6,6 +9,7 @@ from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
 from ...models import User
@@ -32,13 +36,13 @@ class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    def get_serializer_class(self):
+    def get_serializer_class(self) -> type[Serializer]:
         """액션에 따라 다른 Serializer 사용"""
         if self.action == "list":
             return UserListSerializer
         return UserSerializer
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[User]:
         """활성 사용자만 조회"""
         return User.objects.filter(is_active=True)
 
@@ -53,7 +57,7 @@ class UserViewSet(ModelViewSet):
         },
     )
     @action(detail=True, methods=["post"])
-    def toggle_active(self, request, pk=None):
+    def toggle_active(self, request: Any, pk: int | None = None) -> Response:
         """사용자 활성화/비활성화 토글"""
         user = self.get_object()
         user.is_active = not user.is_active
@@ -71,7 +75,7 @@ class UserViewSet(ModelViewSet):
         responses={200: {"description": "통계 조회 성공", "examples": {"application/json": {"total_users": 100, "active_users": 85, "inactive_users": 15, "staff_users": 5, "superuser_count": 1}}}},
     )
     @action(detail=False, methods=["get"])
-    def stats(self, request):
+    def stats(self, request: Any) -> Response:
         """사용자 통계 정보"""
         total_users = User.objects.count()
         active_users = User.objects.filter(is_active=True).count()

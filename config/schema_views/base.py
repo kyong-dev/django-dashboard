@@ -5,6 +5,7 @@ Base Schema View
 """
 
 import json
+from typing import Any
 
 from drf_spectacular.generators import SchemaGenerator
 from drf_spectacular.views import SpectacularAPIView
@@ -14,7 +15,7 @@ from rest_framework.response import Response
 class CategoryAPISchemaView(SpectacularAPIView):
     """Base class for category-specific schema views"""
 
-    category_tags = []
+    category_tags: list[str] = []
     schema_title = ""
     schema_description = """
 
@@ -24,7 +25,7 @@ class CategoryAPISchemaView(SpectacularAPIView):
 - **[👤 관리자 관련 API](/swagger/admin/)** - 관리자 기능
 - **[🌐 외부 연동 API](/swagger/external/)** - 제3자 서비스 연동
 """
-    tag_descriptions = {}
+    tag_descriptions: dict[str, str] = {}
 
     def get(self, request, *args, **kwargs):
         """Override get method to filter by tags"""

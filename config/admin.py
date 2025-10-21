@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
-from unfold.admin import ModelAdmin
+from unfold.admin import ModelAdmin as UnfoldModelAdmin
 
 admin.site.site_header = "대시보드"
 admin.site.site_title = "대시보드"
@@ -18,7 +18,7 @@ admin.site.index_title = "대시보드"
 admin.site.unregister(Group)
 
 
-class ModelAdmin(ModelAdmin):
+class ModelAdmin(UnfoldModelAdmin):
     def getLogMessage(self, form, add=False, formsetObj=None):
         """
         Return a list of messages describing the changes from the form.
@@ -192,12 +192,15 @@ class LogEntryAdmin(ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
+    @admin.display(description=_("시간"))
     def action_time_str(self, obj):
         return obj.action_time.strftime("%Y-%m-%d %H:%M")
 
+    @admin.display(description=_("관리자"))
     def username(self, obj):
         return obj.user.username
 
+    @admin.display(description=_("액션"))
     def action_flag_str(self, obj):
         if obj.action_flag == 1:
             return "추가"
@@ -207,16 +210,12 @@ class LogEntryAdmin(ModelAdmin):
             return "삭제"
         return "-"
 
+    @admin.display(description=_("수정대상"))
     def object_repr_str(self, obj):
         return format_html('<a style="color: blue;" href="{0}">{1}</a>', obj.get_admin_url(), obj.object_repr[:30] + "...")
 
+    @admin.display(description=_("수정내용"))
     def change_message_str(self, obj):
         field_change = f"{obj.user.username}님이 {obj.content_type.app_label}탭의 ID: {obj.object_id}의 "
         field_change += parse_action_string(obj.change_message, obj.action_flag)
         return field_change
-
-    action_time_str.short_description = _("시간")
-    action_flag_str.short_description = _("액션")
-    username.short_description = _("관리자")
-    change_message_str.short_description = _("수정내용")
-    object_repr_str.short_description = _("수정대상")

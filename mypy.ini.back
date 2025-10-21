@@ -1,0 +1,72 @@
+[mypy]
+python_version = 3.13
+plugins = mypy_django_plugin.main
+strict = False
+warn_unused_ignores = True
+warn_redundant_casts = True
+warn_unreachable = True
+show_error_codes = True
+exclude = (?x)(
+    ^venv/
+    | ^\.venv/
+    | /migrations/
+    | ^locale/
+    | ^static/
+    | ^media/
+  )
+
+[mypy.plugins.django-stubs]
+django_settings_module = "config.settings"
+
+# 마이그레이션 제외
+[mypy-*.migrations.*]
+ignore_errors = True
+
+# 외부 패키지 타입 없는 것들
+[mypy-environ.*]
+ignore_missing_imports = True
+
+[mypy-unfold.*]
+ignore_missing_imports = True
+
+[mypy-debug_toolbar.*]
+ignore_missing_imports = True
+
+[mypy-drf_spectacular.*]
+ignore_missing_imports = True
+
+[mypy-celery.*]
+ignore_missing_imports = True
+
+[mypy-channels.*]
+ignore_missing_imports = True
+
+[mypy-channels_redis.*]
+ignore_missing_imports = True
+
+[mypy-django_browser_reload.*]
+ignore_missing_imports = True
+
+[mypy-django_extensions.*]
+ignore_missing_imports = True
+
+[mypy-django_import_export.*]
+ignore_missing_imports = True
+
+[mypy-django_ninja.*]
+ignore_missing_imports = True
+
+[mypy-storages.*]
+ignore_missing_imports = True
+
+[mypy-boto3.*]
+ignore_missing_imports = True
+
+[mypy-botocore.*]
+ignore_missing_imports = True
+
+# 점진적 적용: user 앱만 먼저 엄격하게
+[mypy-user.*]
+disallow_untyped_defs = True
+disallow_untyped_calls = False
+check_untyped_defs = True
