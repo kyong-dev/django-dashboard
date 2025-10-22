@@ -2,6 +2,8 @@
 Custom OpenAPI schema generator for filtering by tags
 """
 
+from typing import Any
+
 from django.urls import URLPattern, URLResolver
 
 from drf_spectacular.generators import SchemaGenerator
@@ -15,9 +17,9 @@ class TagFilteredSchemaGenerator(SchemaGenerator):
         self.target_tags = kwargs.pop("target_tags", [])
         super().__init__(*args, **kwargs)
 
-    def get_paths(self, request=None):
+    def get_paths(self, request: Any = None) -> dict[str, Any]:
         """Override to filter paths by tags before processing"""
-        paths = super().get_paths(request)
+        paths = super().get_paths(request)  # type: ignore[misc]
 
         if not self.target_tags:
             return paths
@@ -50,6 +52,6 @@ class TagFilteredSchemaGenerator(SchemaGenerator):
 class CategoryAutoSchema(AutoSchema):
     """Custom AutoSchema for individual endpoints"""
 
-    def get_operation(self, path, method):
-        operation = super().get_operation(path, method)
+    def get_operation(self, path: str, method: str) -> dict[str, Any]:
+        operation = super().get_operation(path, method)  # type: ignore[misc]
         return operation

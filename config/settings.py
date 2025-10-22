@@ -39,12 +39,12 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 SECRET_KEY = env("SECRET_KEY")
 DEBUG = env.bool("DEBUG_MODE")
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])  # type: ignore[arg-type]
 SERVER_URL = env("SERVER_URL")
 SERVER_MODE = env("SERVER_MODE")
 ADMIN_REDIRECT_URL = "/admin/"
-PLATFORM_NAME = env("PLATFORM_NAME", default="플랫폼")
-FRONTEND_URL = env("FRONTEND_URL", default="http://localhost:3000")
+PLATFORM_NAME = env("PLATFORM_NAME", default="플랫폼")  # type: ignore[arg-type]
+FRONTEND_URL = env("FRONTEND_URL", default="http://localhost:3000")  # type: ignore[arg-type]
 
 # Application definition
 INSTALLED_APPS = [
@@ -245,8 +245,8 @@ INTERNAL_IPS = [
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = env("EMAIL_HOST")
 EMAIL_PORT = env("EMAIL_PORT")
-EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=False)
-EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", default=False)
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=False)  # type: ignore[arg-type]
+EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", default=False)  # type: ignore[arg-type]
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")

@@ -6,7 +6,7 @@ import environ
 
 env = environ.Env(DEBUG=(bool, False))
 
-MAIN_COLOR_CODE = env("MAIN_COLOR_CODE", default="000000")
+MAIN_COLOR_CODE = env("MAIN_COLOR_CODE", default="000000")  # type: ignore[arg-type]
 
 
 def hex_to_rgb(hex_code):

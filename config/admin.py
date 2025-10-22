@@ -42,7 +42,7 @@ class ModelAdmin(UnfoldModelAdmin):
                 cleaned_data = form.cleaned_data[field]
 
                 message.append(f"""[{form.fields[field].label}] "{str(initial)}" => "{str(cleaned_data)}" """)
-            data["fields"] = message
+            data["fields"] = ", ".join(message)  # type: ignore[assignment]
             change_message.append({"changed": data})
         return change_message
 

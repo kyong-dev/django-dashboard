@@ -1,0 +1,22 @@
+{
+  "recommendations": [
+    // Python 개발 필수
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "ms-python.isort",
+    
+    // Django 개발
+    "batisteo.vscode-django",
+    
+    // GitHub Copilot
+    "github.copilot",
+    "github.copilot-chat",
+    
+    // Git
+    "donjayamanne.githistory",
+    
+    // 유틸리티
+    "aaron-bond.better-comments",
+    "oderwat.indent-rainbow"
+  ]
+}

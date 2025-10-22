@@ -112,7 +112,10 @@ ENV/
 env.bak/
 venv.bak/
 
-.vscode/
+# VS Code settings (이제 버전 관리에 포함)
+# .vscode/
+
+.github/custom-instructions.md
 
 .DS_Store
 
