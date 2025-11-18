@@ -30,7 +30,7 @@ cron_descriptor==2.0.6
 cryptography==46.0.2
 diff-match-patch==20241021
 distlib==0.4.0
-Django==5.2.7
+Django==5.2.8
 django-browser-reload==1.21.0
 django-celery-beat==2.8.1
 django-cors-headers==4.9.0
@@ -44,7 +44,7 @@ django-storages==1.14.6
 django-stubs==5.2.7
 django-stubs-ext==5.2.7
 django-timezone-field==7.1
-django-unfold-patrick==0.70.0
+django-unfold-patrick==0.71.0
 djangorestframework==3.16.1
 djangorestframework-stubs==3.16.4
 djangorestframework_simplejwt==5.5.1
