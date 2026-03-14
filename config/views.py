@@ -241,5 +241,5 @@ def user_badge_callback(request):
         return ""
 
 
-def admin_permission_callback(request):
+def superuser_permission_callback(request):
     return request.user.is_superuser

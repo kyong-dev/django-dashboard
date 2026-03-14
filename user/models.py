@@ -45,3 +45,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         db_table = "user"
         verbose_name = _("사용자")
         verbose_name_plural = _("사용자")
+
+
+class AdminUser(User):
+    class Meta:
+        proxy = True
+        verbose_name = _("관리자")
+        verbose_name_plural = _("관리자")

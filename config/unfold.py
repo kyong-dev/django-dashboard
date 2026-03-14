@@ -6,7 +6,7 @@ import environ
 
 env = environ.Env(DEBUG=(bool, False))
 
-MAIN_COLOR_CODE = env("MAIN_COLOR_CODE", default="000000")  # type: ignore[arg-type]
+MAIN_COLOR_CODE = env("MAIN_COLOR_CODE", default="000000")
 
 
 def hex_to_rgb(hex_code):
@@ -96,28 +96,29 @@ unfold_settings = {
                 "separator": True,
                 "collapsible": True,
                 "items": [
-                    # {
-                    #     "title": _("관리자"),
-                    #     "icon": "shield_person",  # Supported icon set: https://fonts.google.com/icons
-                    #     "link": reverse_lazy("admin:users_admin_changelist"),
-                    #     "permission": "newproject.views.admin_permission_callback",
-                    # },
+                    {
+                        "title": _("관리자"),
+                        "icon": "shield_person",  # Supported icon set: https://fonts.google.com/icons
+                        "link": reverse_lazy("admin:user_adminuser_changelist"),
+                        "permission": "config.views.superuser_permission_callback",
+                    },
                     {
                         "title": _("사용자"),
                         "icon": "person",
                         "link": reverse_lazy("admin:user_user_changelist"),
-                        # "badge": "config.views.user_badge_callback",
+                        "permission": "config.views.superuser_permission_callback",
                     },
                     {
                         "title": _("그룹"),
                         "icon": "group",
                         "link": reverse_lazy("admin:auth_group_changelist"),
+                        "permission": "config.views.superuser_permission_callback",
                     },
                     {
                         "title": _("로그"),
                         "icon": "history",
                         "link": reverse_lazy("admin:admin_logentry_changelist"),
-                        # "permission": "config.views.admin_permission_callback",
+                        "permission": "config.views.superuser_permission_callback",
                     },
                 ],
             },
