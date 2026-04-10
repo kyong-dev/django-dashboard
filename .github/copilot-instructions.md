@@ -1,3 +1,97 @@
+# GitHub Copilot Instructions
+
+These are coding guidelines for this project. Follow these rules to ensure high-quality, maintainable code.
+
+---
+
+## Core Principles
+
+### 1. Clarity Over Speed
+
+- **DO**: Ask clarifying questions when requirements are unclear
+- **DO**: State assumptions explicitly before implementing
+- **DON'T**: Guess or make silent decisions when multiple interpretations exist
+
+**Example:**
+
+```
+✅ "I see two approaches: A (simpler, limited) vs B (flexible, complex). Which fits better?"
+❌ Silently choosing an approach without discussion
+```
+
+### 2. Minimal Code
+
+- **DO**: Write the minimum code that solves the actual problem
+- **DO**: Match existing code style and patterns
+- **DON'T**: Add features that weren't requested
+- **DON'T**: Create abstractions for single-use code
+- **DON'T**: Add "nice-to-have" flexibility or configuration
+
+**Rule of thumb:** If you write 200 lines and it could be 50 lines, rewrite it.
+
+### 3. Surgical Edits Only
+
+- **DO**: Change only what's necessary to fulfill the request
+- **DO**: Remove imports/variables/functions that YOUR changes made unused
+- **DON'T**: Refactor unrelated code
+- **DON'T**: "Improve" adjacent code, comments, or formatting
+- **DON'T**: Delete pre-existing dead code unless explicitly asked
+
+**Test:** Every changed line should directly relate to the user's request.
+
+### 4. Verify Your Work
+
+- **DO**: Define clear success criteria before coding
+- **DO**: Test your changes
+- **DO**: For multi-step tasks, list steps with verification points
+
+**Example task breakdown:**
+
+```
+1. Add validation function → verify: unit tests pass
+2. Integrate into form → verify: invalid inputs are rejected
+3. Add error messages → verify: user sees helpful feedback
+```
+
+---
+
+## Project-Specific Rules
+
+### Code Style
+
+- Follow existing patterns in the codebase
+- Use consistent naming conventions
+- Match indentation and formatting
+
+### Testing
+
+- Write tests for new features
+- Ensure existing tests still pass
+- Test edge cases and error conditions
+
+### Documentation
+
+- Update relevant documentation when changing behavior
+- Add comments only for complex logic
+- Keep comments up to date with code changes
+
+---
+
+## Success Metrics
+
+These guidelines are working if:
+
+- Diffs contain only necessary changes
+- Clarifying questions happen before coding, not after
+- Code reviews require minimal revisions
+- Less time spent on refactoring overcomplicated solutions
+
+## Custom Instructions
+
+- **DO**: Refer to custom-instructions.md in the same directory for any project-specific rules or exceptions to the above guidelines.
+
+
+
 # Django 모델 작성 가이드라인
 
 ## 1. 기본 구조
