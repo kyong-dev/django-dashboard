@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 from ..views.user.external import ExternalUserViewSet
 
 router = DefaultRouter()
-# router.register(r"users", ExternalUserViewSet, basename="external-users")
+router.register(r"users", ExternalUserViewSet, basename="external-users")
 
 urlpatterns = [
     path("", include(router.urls)),

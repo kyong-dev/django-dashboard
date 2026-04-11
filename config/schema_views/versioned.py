@@ -19,6 +19,12 @@ import yaml
 
 SCHEMA_DIR = os.path.join(settings.BASE_DIR, "static", "docs")
 
+CATEGORY_TAGS: dict[str, list[str]] = {
+    "app": ["app", "user"],
+    "admin": ["admin", "management"],
+    "external": ["external", "public", "integration"],
+}
+
 
 def get_available_versions() -> list[str]:
     """static/docs/ 에서 사용 가능한 스키마 버전 목록을 반환합니다."""
@@ -101,13 +107,37 @@ def mark_changes(
     return schema
 
 
+def filter_schema_by_category(schema: dict[str, Any], category: str) -> dict[str, Any]:
+    """스키마에서 특정 카테고리 태그에 해당하는 경로만 필터링합니다."""
+    target_tags = CATEGORY_TAGS.get(category, [])
+    if not target_tags:
+        return schema
+
+    filtered_paths: dict[str, Any] = {}
+    for path, path_item in schema.get("paths", {}).items():
+        filtered_methods: dict[str, Any] = {}
+        for method, operation in path_item.items():
+            if not isinstance(operation, dict):
+                continue
+            operation_tags = operation.get("tags", [])
+            for op_tag in operation_tags:
+                if any(op_tag == t or op_tag.startswith(f"{t}-") for t in target_tags):
+                    filtered_methods[method] = operation
+                    break
+        if filtered_methods:
+            filtered_paths[path] = filtered_methods
+
+    schema["paths"] = filtered_paths
+    return schema
+
+
 class VersionedSchemaAPIView(APIView):
     """버전별 스키마를 제공하고, 신규/수정된 엔드포인트에 딱지를 표시합니다."""
 
     authentication_classes: list[Any] = []
     permission_classes: list[Any] = []
 
-    def get(self, request: Any, version: str) -> Response:
+    def get(self, request: Any, version: str, category: str | None = None) -> Response:
         versions = get_available_versions()
         schema = load_schema(version)
 
@@ -144,6 +174,11 @@ class VersionedSchemaAPIView(APIView):
                     if fallback_new:
                         schema = mark_changes(schema, fallback_new, set())
 
+        # 카테고리 필터링
+        category = category or self.kwargs.get("category")
+        if category:
+            schema = filter_schema_by_category(schema, category)
+
         # 버전 정보 메타데이터 추가
         prev_version = get_previous_version(version, versions)
         schema.setdefault("info", {})
@@ -178,10 +213,16 @@ class VersionListAPIView(APIView):
 
 
 class VersionedSwaggerView(SpectacularSwaggerView):
-    """버전별 Swagger UI 뷰"""
+    """버전별 Swagger UI 뷰 (카테고리 필터 지원)"""
 
     def _get_schema_url(self, request: Any) -> str:
         version = self.kwargs.get("version", "")
+        category = self.kwargs.get("category")
+        if category:
+            return reverse(
+                "versioned-category-schema",
+                kwargs={"version": version, "category": category},
+            )
         return reverse("versioned-schema", kwargs={"version": version})
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -201,10 +242,16 @@ class VersionedSwaggerView(SpectacularSwaggerView):
 
 
 class VersionedRedocView(SpectacularRedocView):
-    """버전별 Redoc 뷰"""
+    """버전별 Redoc 뷰 (카테고리 필터 지원)"""
 
     def _get_schema_url(self, request: Any) -> str:
         version = self.kwargs.get("version", "")
+        category = self.kwargs.get("category")
+        if category:
+            return reverse(
+                "versioned-category-schema",
+                kwargs={"version": version, "category": category},
+            )
         return reverse("versioned-schema", kwargs={"version": version})
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:

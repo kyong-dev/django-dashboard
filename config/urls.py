@@ -63,8 +63,11 @@ if settings.DEBUG:
         # Versioned Schema
         path("api/versions/", VersionListAPIView.as_view(), name="version-list"),
         path("api/versions/<str:version>/schema/", VersionedSchemaAPIView.as_view(), name="versioned-schema"),
+        path("api/versions/<str:version>/schema/<str:category>/", VersionedSchemaAPIView.as_view(), name="versioned-category-schema"),
         path("swagger/versions/<str:version>/", VersionedSwaggerView.as_view(), name="versioned-swagger"),
+        path("swagger/versions/<str:version>/<str:category>/", VersionedSwaggerView.as_view(), name="versioned-category-swagger"),
         path("redoc/versions/<str:version>/", VersionedRedocView.as_view(), name="versioned-redoc"),
+        path("redoc/versions/<str:version>/<str:category>/", VersionedRedocView.as_view(), name="versioned-category-redoc"),
     ]
     urlpatterns += [
         path("__debug__/", include(debug_toolbar.urls)),
