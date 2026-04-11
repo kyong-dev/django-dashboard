@@ -271,4 +271,5 @@ if DEBUG:
     MIDDLEWARE = [
         "debug_toolbar.middleware.DebugToolbarMiddleware",
         "silk.middleware.SilkyMiddleware",
+        "config.middleware.DynamicLanguageMiddleware",
     ] + MIDDLEWARE

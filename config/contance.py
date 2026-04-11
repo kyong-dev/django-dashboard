@@ -9,7 +9,7 @@ CONSTANCE_ADDITIONAL_FIELDS = {
     "language_select": [
         "django.forms.fields.ChoiceField",
         {
-            "widget": "django.forms.Select",
+            "widget": "unfold.widgets.UnfoldAdminSelectWidget",
             "choices": (
                 ("ko", "한국어"),
                 ("en", "English"),
@@ -56,6 +56,7 @@ CONSTANCE_CONFIG = {
     # 사이트 기본 설정
     "SITE_NAME": ("My Platform", _("사이트 이름"), str),
     "SITE_DESCRIPTION": ("", _("사이트 설명"), str),
+    "DEFAULT_LANGUAGE": ("ko", _("기본 언어"), "language_select"),
     "MAINTENANCE_MODE": (False, _("점검 모드 활성화"), bool),
     # 사용자 설정
     "MAX_LOGIN_ATTEMPTS": (5, _("최대 로그인 시도 횟수"), int),
@@ -72,7 +73,7 @@ CONSTANCE_CONFIG_FIELDSETS = (
     (
         _("사이트 설정"),
         {
-            "fields": ("SITE_NAME", "SITE_DESCRIPTION", "MAINTENANCE_MODE"),
+            "fields": ("SITE_NAME", "SITE_DESCRIPTION", "DEFAULT_LANGUAGE", "MAINTENANCE_MODE"),
             "collapse": False,
         },
     ),
