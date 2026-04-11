@@ -139,6 +139,19 @@ unfold_settings = {
             # #                 # "link": reverse_lazy("admin:users_user_changelist"),
             # #             },
             #         ],
+            {
+                "title": _("설정"),
+                "separator": False,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": _("사이트 설정"),
+                        "icon": "tune",
+                        "link": reverse_lazy("admin:constance_config_changelist"),
+                        "permission": "config.views.superuser_permission_callback",
+                    },
+                ],
+            },
         ],
     },
     "TABS": [

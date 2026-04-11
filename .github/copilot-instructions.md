@@ -1362,3 +1362,94 @@ class CourseDetailAPIView(BaseDetailAPIView):
 - [ ] Swagger UI에서 실제 동작 테스트
 
 이 가이드라인을 따르면 DRF Spectacular를 활용한 명확하고 사용하기 쉬운 API 문서를 작성할 수 있습니다.
+
+## 11. Django Constance 동적 설정 가이드
+
+### 11.1 개요
+
+Django Constance를 사용하여 Admin 화면에서 동적으로 설정값을 관리합니다. 코드 배포 없이 런타임에 설정을 변경할 수 있습니다.
+
+- **백엔드**: Database 백엔드 (`constance.backends.database.DatabaseBackend`)
+- **Admin**: Unfold Admin과 통합
+- **참고 문서**: `docs/CONSTANCE_GUIDE.md`
+
+### 11.2 설정 작성 규칙
+
+#### CONSTANCE_CONFIG 정의
+
+```python
+from django.utils.translation import gettext_lazy as _
+
+CONSTANCE_CONFIG = {
+    "KEY_NAME": (기본값, _("설명"), 타입),
+}
+```
+
+#### 네이밍 컨벤션
+
+- 키 이름: `UPPER_SNAKE_CASE`
+- 그룹별 접두사 사용 (예: `SITE_`, `EMAIL_`, `AUTH_`)
+- 설명: `gettext_lazy`로 국제화
+
+#### 예시
+
+```python
+CONSTANCE_CONFIG = {
+    "SITE_NAME": ("My Platform", _("사이트 이름"), str),
+    "MAINTENANCE_MODE": (False, _("점검 모드 활성화"), bool),
+    "MAX_LOGIN_ATTEMPTS": (5, _("최대 로그인 시도 횟수"), int),
+}
+```
+
+### 11.3 Fieldsets (그룹화)
+
+모든 `CONSTANCE_CONFIG` 키를 fieldset에 포함해야 합니다:
+
+```python
+CONSTANCE_CONFIG_FIELDSETS = {
+    _("사이트 설정"): {
+        "fields": ("SITE_NAME", "MAINTENANCE_MODE"),
+        "collapse": False,
+    },
+    _("보안 설정"): {
+        "fields": ("MAX_LOGIN_ATTEMPTS",),
+        "collapse": True,
+    },
+}
+```
+
+### 11.4 코드에서 사용
+
+```python
+from constance import config
+
+# 읽기
+site_name = config.SITE_NAME
+
+# 쓰기
+config.MAINTENANCE_MODE = True
+```
+
+### 11.5 테스트에서 사용
+
+```python
+from constance.test import override_config
+
+@override_config(MAINTENANCE_MODE=True)
+def test_maintenance_mode(self):
+    pass
+```
+
+### 11.6 체크리스트
+
+#### 새 설정값 추가 시 확인사항
+
+- [ ] `CONSTANCE_CONFIG`에 키 추가 (기본값, 설명, 타입)
+- [ ] `CONSTANCE_CONFIG_FIELDSETS`에 키 포함
+- [ ] 설명에 `gettext_lazy` 사용
+- [ ] `UPPER_SNAKE_CASE` 네이밍 준수
+- [ ] 기본값이 적절한지 확인
+- [ ] 관련 코드에서 `config.KEY_NAME`으로 접근
+- [ ] 테스트에서 `@override_config` 사용
+
+이 가이드라인을 따르면 Admin에서 동적으로 관리 가능한 설정 시스템을 구축할 수 있습니다.

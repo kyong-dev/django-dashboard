@@ -17,6 +17,12 @@ import boto3
 import environ
 
 from .unfold import unfold_settings
+from .contance import (
+    CONSTANCE_ADDITIONAL_FIELDS,
+    CONSTANCE_BACKEND,
+    CONSTANCE_CONFIG,
+    CONSTANCE_CONFIG_FIELDSETS,
+)
 
 # Django-stubs monkeypatch for better type checking
 import django_stubs_ext
@@ -55,6 +61,7 @@ INSTALLED_APPS = [
     "unfold.contrib.import_export",  # optional, if django-import-export package is used
     "unfold.contrib.guardian",  # optional, if django-guardian package is used
     "unfold.contrib.simple_history",  # optional, if django-simple-history package is used
+    "unfold.contrib.constance",  # optional, if django-constance package is used
     "django.contrib.admin",  # required
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -68,6 +75,7 @@ INSTALLED_APPS = [
     "drf_spectacular_sidecar",
     "rest_framework",
     "django_extensions",
+    "constance",
     "storages",
     "user",
 ]
@@ -150,6 +158,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "constance.context_processors.config",
             ],
         },
     },

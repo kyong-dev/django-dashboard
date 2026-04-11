@@ -20,6 +20,22 @@
 
 ---
 
+### ⚙️ [Django Constance 가이드](./CONSTANCE_GUIDE.md)
+
+- 동적 설정값 관리 (Admin에서 변경 가능)
+- Database 백엔드 설정 방법
+- Fieldsets를 통한 설정 그룹화
+- Unfold Admin 사이드바 연동
+
+**주요 기능:**
+
+- Admin에서 사이트 설정 변경
+- Python/템플릿에서 `config.KEY_NAME`으로 접근
+- CLI로 설정값 조회/변경
+- Signal로 값 변경 감지
+
+---
+
 ### 📧 [이메일 시스템 가이드](./EMAIL_GUIDE.md)
 
 - 이메일 전송 유틸리티 사용법
@@ -92,6 +108,7 @@ django-dashboard/
 ├── docs/
 │   ├── README.md           # 📚 이 문서
 │   ├── API_GUIDE.md        # 🚀 API 문서화 가이드
+│   ├── CONSTANCE_GUIDE.md  # ⚙️ Django Constance 가이드
 │   └── EMAIL_GUIDE.md      # 📧 이메일 시스템 가이드
 ├── config/
 │   ├── schema_views/       # API 스키마 뷰
