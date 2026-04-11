@@ -252,6 +252,37 @@
             </a>
           </div>
         </div>
+
+        {% if is_versioned and available_versions %}
+        <div class="nav-dropdown">
+          <button class="dropdown-button" onclick="toggleVersionDropdown()" style="background: #059669;">
+            <span>v{{ current_version }}</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
+          </button>
+          <div class="dropdown-content" id="version-dropdown-menu">
+            {% for v in available_versions reversed %}
+            <a
+              href="/swagger/versions/{{ v }}/"
+              class="dropdown-item {% if v == current_version %}active{% endif %}"
+            >
+              v{{ v }}
+              {% if v == current_version %}
+              <span class="nav-badge" style="background:#d1fae5;color:#065f46;">Current</span>
+              {% endif %}
+              {% if forloop.first and v != current_version %}
+              <span class="nav-badge" style="background:#dbeafe;color:#1e40af;">Latest</span>
+              {% endif %}
+            </a>
+            {% endfor %}
+            <div class="dropdown-separator"></div>
+            <a href="/api/versions/" class="dropdown-item" target="_blank">
+              📋 Version List (JSON)
+            </a>
+          </div>
+        </div>
+        {% endif %}
       </div>
     </nav>
 
@@ -299,6 +330,16 @@
       function toggleDropdown() {
         const dropdown = document.getElementById("dropdown-menu");
         dropdown.classList.toggle("show");
+        // 다른 드롭다운 닫기
+        const versionDropdown = document.getElementById("version-dropdown-menu");
+        if (versionDropdown) versionDropdown.classList.remove("show");
+      }
+
+      function toggleVersionDropdown() {
+        const dropdown = document.getElementById("version-dropdown-menu");
+        dropdown.classList.toggle("show");
+        // 다른 드롭다운 닫기
+        document.getElementById("dropdown-menu").classList.remove("show");
       }
 
       // Close dropdown when clicking outside
@@ -307,10 +348,9 @@
           !event.target.matches(".dropdown-button") &&
           !event.target.closest(".dropdown-button")
         ) {
-          const dropdown = document.getElementById("dropdown-menu");
-          if (dropdown.classList.contains("show")) {
-            dropdown.classList.remove("show");
-          }
+          document.querySelectorAll(".dropdown-content").forEach(function (el) {
+            el.classList.remove("show");
+          });
         }
       };
     </script>

@@ -16,6 +16,7 @@ Including another URLconf
 """
 
 from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.shortcuts import redirect
 from django.urls import include, path
@@ -25,6 +26,7 @@ from drf_spectacular.views import SpectacularRedocView
 from rest_framework import routers
 
 from .schema_views import *
+from .schema_views.versioned import VersionedRedocView, VersionedSchemaAPIView, VersionedSwaggerView, VersionListAPIView
 
 router = routers.DefaultRouter()
 # AdminUserViewSet은 이제 user/views/user/admin.py로 이동됨
@@ -48,8 +50,8 @@ if settings.DEBUG:
         path("api/schema/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
         # App API Documentation
         path("api/schema/app/", AppAPISchemaView.as_view(), name="app-schema"),
-        path("swagger/app/", AppAPIsSwaggerView.as_view(url_name="app-schema"), name="app-swagger-ui"),
-        path("api/schema/app/redoc/", SpectacularRedocView.as_view(url_name="app-schema"), name="app-redoc"),
+        path("swagger/app/", AppAPIsSwaggerView.as_view(), name="app-swagger-ui"),
+        path("api/schema/app/redoc/", VersionedRedocView.as_view(), name="app-redoc"),
         # Admin API Documentation
         path("api/schema/admin/", AdminAPISchemaView.as_view(), name="admin-schema"),
         path("swagger/admin/", AdminAPIsSwaggerView.as_view(url_name="admin-schema"), name="admin-swagger-ui"),
@@ -58,6 +60,11 @@ if settings.DEBUG:
         path("api/schema/external/", ExternalAPISchemaView.as_view(), name="external-schema"),
         path("swagger/external/", ExternalAPIsSwaggerView.as_view(url_name="external-schema"), name="external-swagger-ui"),
         path("api/schema/external/redoc/", SpectacularRedocView.as_view(url_name="external-schema"), name="external-redoc"),
+        # Versioned Schema
+        path("api/versions/", VersionListAPIView.as_view(), name="version-list"),
+        path("api/versions/<str:version>/schema/", VersionedSchemaAPIView.as_view(), name="versioned-schema"),
+        path("swagger/versions/<str:version>/", VersionedSwaggerView.as_view(), name="versioned-swagger"),
+        path("redoc/versions/<str:version>/", VersionedRedocView.as_view(), name="versioned-redoc"),
     ]
     urlpatterns += [
         path("__debug__/", include(debug_toolbar.urls)),
@@ -66,3 +73,5 @@ if settings.DEBUG:
     urlpatterns += [
         path("__reload__/", include("django_browser_reload.urls")),
     ]
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

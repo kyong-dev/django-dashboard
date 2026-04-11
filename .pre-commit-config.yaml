@@ -20,4 +20,11 @@ repos:
         args: [--config-file=mypy.ini]
         files: ^(user|utils)/.*\.py$
 
+      - id: check-schema
+        name: check-schema
+        entry: python manage.py check_schema
+        language: system
+        pass_filenames: false
+        files: (views|serializers|urls)/.*\.py$
+
   
