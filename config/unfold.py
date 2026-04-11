@@ -106,7 +106,7 @@ unfold_settings = {
                         "title": _("사용자"),
                         "icon": "person",
                         "link": reverse_lazy("admin:user_user_changelist"),
-                        "permission": "config.views.superuser_permission_callback",
+                        # "permission": "config.views.superuser_permission_callback",
                     },
                     {
                         "title": _("그룹"),

@@ -113,8 +113,10 @@ class Command(BaseCommand):
     def add_arguments(self, parser):  # type: ignore[override]
         parser.add_argument(
             "version",
+            nargs="?",
             type=str,
-            help="스키마 버전 (예: 1.0.0, 1.1.0)",
+            default=None,
+            help="스키마 버전 (예: 1.0.0). 생략하면 constance API_VERSION 사용",
         )
         parser.add_argument(
             "--force",
@@ -123,7 +125,9 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):  # type: ignore[override]
-        version: str = options["version"]
+        from constance import config as constance_config  # type: ignore[import-untyped]
+
+        version: str = options["version"] or constance_config.API_VERSION
         force: bool = options["force"]
 
         schema_dir = os.path.join(settings.BASE_DIR, "static", "docs")
@@ -137,6 +141,10 @@ class Command(BaseCommand):
         # 현재 스키마 생성
         generator = SchemaGenerator()
         schema = generator.get_schema(public=True)
+
+        # 스키마 버전 설정
+        schema.setdefault("info", {})
+        schema["info"]["version"] = version
 
         # 이전 버전 찾기
         prev_schema = self._find_previous_schema(version, schema_dir)
@@ -189,6 +197,11 @@ class Command(BaseCommand):
 
         # changelog 저장
         self._update_changelog(schema_dir, changelog_entry)
+
+        # constance API_VERSION 업데이트
+        if constance_config.API_VERSION != version:
+            constance_config.API_VERSION = version
+            self.stdout.write(self.style.SUCCESS(f"constance API_VERSION → {version}"))
 
         self.stdout.write(self.style.SUCCESS(f"\n스키마 v{version}이 저장되었습니다: {filepath}"))
 

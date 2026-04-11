@@ -183,4 +183,7 @@ tmp/
 requirements.in
 
 static/
+!static/docs/
+!static/docs/schema_v*.yml
+!static/docs/changelog.yml
 media/

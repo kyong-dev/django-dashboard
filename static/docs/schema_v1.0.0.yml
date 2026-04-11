@@ -1,0 +1,966 @@
+openapi: 3.0.3
+info:
+  title: Django Dashboard API
+  version: 1.0.0
+  description: API documentation for Django Dashboard application
+paths:
+  /api/user/app/users/:
+    post:
+      operationId: api_user_app_users_create
+      description: 새로운 사용자를 생성합니다.
+      summary: 새 사용자 생성
+      tags:
+      - app-user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+            examples:
+              ValidUserCreation:
+                value:
+                  username: johndoe
+                  email: john@example.com
+                  password: secure_password123
+                summary: 유효한 사용자 생성 예제
+                description: 새 사용자를 생성하는 유효한 요청 예제
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                UserResponse:
+                  value:
+                    id: 1
+                    username: johndoe
+                    email: john@example.com
+                    is_active: true
+                    is_staff: false
+                    is_superuser: false
+                    registered_at: '2023-01-15T10:30:00Z'
+                    deactivated_at: null
+                  summary: 사용자 응답 예제
+                  description: 사용자 조회/생성 시 반환되는 응답 예제
+          description: ''
+    get:
+      operationId: api_user_app_users_list
+      description: 모든 사용자 목록을 조회합니다. 페이지네이션이 적용됩니다.
+      summary: 사용자 목록 조회
+      tags:
+      - app-user
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserList'
+          description: ''
+  /api/user/app/users/stats/:
+    get:
+      operationId: api_user_app_users_stats_retrieve
+      description: 사용자 관련 통계 정보를 조회합니다.
+      summary: 사용자 통계
+      tags:
+      - app-user
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: 통계 조회 성공
+                examples:
+                  application/json:
+                    total_users: 100
+                    active_users: 85
+                    inactive_users: 15
+                    staff_users: 5
+                    superuser_count: 1
+          description: ''
+  /api/user/app/users/{id}/:
+    get:
+      operationId: api_user_app_users_retrieve
+      description: 특정 사용자의 상세 정보를 조회합니다.
+      summary: 사용자 상세 조회
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this 사용자.
+        required: true
+      tags:
+      - app-user
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                UserResponse:
+                  value:
+                    id: 1
+                    username: johndoe
+                    email: john@example.com
+                    is_active: true
+                    is_staff: false
+                    is_superuser: false
+                    registered_at: '2023-01-15T10:30:00Z'
+                    deactivated_at: null
+                  summary: 사용자 응답 예제
+                  description: 사용자 조회/생성 시 반환되는 응답 예제
+          description: ''
+    patch:
+      operationId: api_user_app_users_partial_update
+      description: 사용자 정보를 부분적으로 수정합니다.
+      summary: 사용자 정보 부분 수정
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this 사용자.
+        required: true
+      tags:
+      - app-user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+            examples:
+              ValidUserCreation:
+                value:
+                  username: johndoe
+                  email: john@example.com
+                  password: secure_password123
+                summary: 유효한 사용자 생성 예제
+                description: 새 사용자를 생성하는 유효한 요청 예제
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                UserResponse:
+                  value:
+                    id: 1
+                    username: johndoe
+                    email: john@example.com
+                    is_active: true
+                    is_staff: false
+                    is_superuser: false
+                    registered_at: '2023-01-15T10:30:00Z'
+                    deactivated_at: null
+                  summary: 사용자 응답 예제
+                  description: 사용자 조회/생성 시 반환되는 응답 예제
+          description: ''
+    delete:
+      operationId: api_user_app_users_destroy
+      description: 사용자를 삭제합니다.
+      summary: 사용자 삭제
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this 사용자.
+        required: true
+      tags:
+      - app-user
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+    put:
+      operationId: api_user_app_users_update
+      description: 사용자 정보를 전체 수정합니다.
+      summary: 사용자 정보 수정
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this 사용자.
+        required: true
+      tags:
+      - app-user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+            examples:
+              ValidUserCreation:
+                value:
+                  username: johndoe
+                  email: john@example.com
+                  password: secure_password123
+                summary: 유효한 사용자 생성 예제
+                description: 새 사용자를 생성하는 유효한 요청 예제
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                UserResponse:
+                  value:
+                    id: 1
+                    username: johndoe
+                    email: john@example.com
+                    is_active: true
+                    is_staff: false
+                    is_superuser: false
+                    registered_at: '2023-01-15T10:30:00Z'
+                    deactivated_at: null
+                  summary: 사용자 응답 예제
+                  description: 사용자 조회/생성 시 반환되는 응답 예제
+          description: ''
+  /api/user/app/users/{id}/toggle_active/:
+    post:
+      operationId: api_user_app_users_toggle_active_create
+      description: 사용자 계정을 활성화하거나 비활성화합니다.
+      summary: 사용자 활성화/비활성화
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: 사용자 ID
+        required: true
+      tags:
+      - app-user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+            examples:
+              ValidUserCreation:
+                value:
+                  username: johndoe
+                  email: john@example.com
+                  password: secure_password123
+                summary: 유효한 사용자 생성 예제
+                description: 새 사용자를 생성하는 유효한 요청 예제
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: 상태 변경 성공
+                examples:
+                  application/json:
+                    status: active
+                    message: 사용자가 활성화되었습니다.
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                description: 사용자를 찾을 수 없습니다.
+          description: ''
+  /api/user/admin/users/:
+    post:
+      operationId: api_user_admin_users_create
+      description: 관리자용 - 새로운 사용자를 생성합니다.
+      summary: '[관리자] 사용자 생성'
+      tags:
+      - admin-user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+            examples:
+              ValidUserCreation:
+                value:
+                  username: johndoe
+                  email: john@example.com
+                  password: secure_password123
+                summary: 유효한 사용자 생성 예제
+                description: 새 사용자를 생성하는 유효한 요청 예제
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                UserResponse:
+                  value:
+                    id: 1
+                    username: johndoe
+                    email: john@example.com
+                    is_active: true
+                    is_staff: false
+                    is_superuser: false
+                    registered_at: '2023-01-15T10:30:00Z'
+                    deactivated_at: null
+                  summary: 사용자 응답 예제
+                  description: 사용자 조회/생성 시 반환되는 응답 예제
+          description: ''
+    get:
+      operationId: api_user_admin_users_list
+      description: 관리자용 - 비활성 사용자 포함 모든 사용자를 조회합니다.
+      summary: '[관리자] 모든 사용자 조회'
+      tags:
+      - admin-user
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserList'
+          description: ''
+  /api/user/admin/users/system_stats/:
+    get:
+      operationId: api_user_admin_users_system_stats_retrieve
+      description: 관리자용 - 전체 시스템 통계를 조회합니다.
+      summary: '[관리자] 전체 시스템 통계'
+      tags:
+      - admin-user
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: 시스템 통계 조회 성공
+                examples:
+                  application/json:
+                    total_users: 100
+                    active_users: 85
+                    inactive_users: 15
+                    staff_users: 5
+                    superuser_count: 1
+                    today_registrations: 3
+                    this_week_registrations: 12
+          description: ''
+  /api/user/admin/users/{id}/:
+    get:
+      operationId: api_user_admin_users_retrieve
+      description: 관리자용 - 특정 사용자의 상세 정보를 조회합니다.
+      summary: '[관리자] 사용자 상세 조회'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this 사용자.
+        required: true
+      tags:
+      - admin-user
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                UserResponse:
+                  value:
+                    id: 1
+                    username: johndoe
+                    email: john@example.com
+                    is_active: true
+                    is_staff: false
+                    is_superuser: false
+                    registered_at: '2023-01-15T10:30:00Z'
+                    deactivated_at: null
+                  summary: 사용자 응답 예제
+                  description: 사용자 조회/생성 시 반환되는 응답 예제
+          description: ''
+    patch:
+      operationId: api_user_admin_users_partial_update
+      description: 관리자용 - 사용자 정보를 부분적으로 수정합니다.
+      summary: '[관리자] 사용자 정보 부분 수정'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this 사용자.
+        required: true
+      tags:
+      - admin-user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+            examples:
+              ValidUserCreation:
+                value:
+                  username: johndoe
+                  email: john@example.com
+                  password: secure_password123
+                summary: 유효한 사용자 생성 예제
+                description: 새 사용자를 생성하는 유효한 요청 예제
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                UserResponse:
+                  value:
+                    id: 1
+                    username: johndoe
+                    email: john@example.com
+                    is_active: true
+                    is_staff: false
+                    is_superuser: false
+                    registered_at: '2023-01-15T10:30:00Z'
+                    deactivated_at: null
+                  summary: 사용자 응답 예제
+                  description: 사용자 조회/생성 시 반환되는 응답 예제
+          description: ''
+    delete:
+      operationId: api_user_admin_users_destroy
+      description: 관리자용 - 사용자를 삭제합니다.
+      summary: '[관리자] 사용자 삭제'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this 사용자.
+        required: true
+      tags:
+      - admin-user
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+    put:
+      operationId: api_user_admin_users_update
+      description: 관리자용 - 사용자 정보를 전체 수정합니다.
+      summary: '[관리자] 사용자 정보 수정'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this 사용자.
+        required: true
+      tags:
+      - admin-user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+            examples:
+              ValidUserCreation:
+                value:
+                  username: johndoe
+                  email: john@example.com
+                  password: secure_password123
+                summary: 유효한 사용자 생성 예제
+                description: 새 사용자를 생성하는 유효한 요청 예제
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                UserResponse:
+                  value:
+                    id: 1
+                    username: johndoe
+                    email: john@example.com
+                    is_active: true
+                    is_staff: false
+                    is_superuser: false
+                    registered_at: '2023-01-15T10:30:00Z'
+                    deactivated_at: null
+                  summary: 사용자 응답 예제
+                  description: 사용자 조회/생성 시 반환되는 응답 예제
+          description: ''
+  /api/user/admin/users/{id}/force_deactivate/:
+    post:
+      operationId: api_user_admin_users_force_deactivate_create
+      description: 관리자용 - 사용자를 강제로 비활성화하고 비활성화 시간을 기록합니다.
+      summary: '[관리자] 사용자 강제 비활성화'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this 사용자.
+        required: true
+      tags:
+      - admin-user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+            examples:
+              ValidUserCreation:
+                value:
+                  username: johndoe
+                  email: john@example.com
+                  password: secure_password123
+                summary: 유효한 사용자 생성 예제
+                description: 새 사용자를 생성하는 유효한 요청 예제
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: 비활성화 성공
+                examples:
+                  application/json:
+                    message: 사용자가 비활성화되었습니다.
+                    deactivated_at: '2023-01-20T14:25:00Z'
+          description: ''
+  /api/user/external/users/:
+    get:
+      operationId: external_users_list
+      description: "\n        **외부 연동용** - 제한된 사용자 정보를 제공합니다.\n        \n        ###\
+        \ 기능\n        - 활성 사용자만 조회\n        - 기본 정보만 제공 (보안상 제한)\n        - 조회만 가능\
+        \ (생성/수정/삭제 불가)\n        "
+      summary: '[외부] 공개 사용자 정보'
+      tags:
+      - external-user
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserList'
+          description: ''
+  /api/user/external/users/{id}/:
+    get:
+      operationId: external_users_detail
+      description: "\n        **외부 연동용** - 특정 사용자의 기본 정보만 조회합니다.\n        "
+      summary: '[외부] 사용자 기본 정보 조회'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this 사용자.
+        required: true
+      tags:
+      - external-user
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserList'
+          description: ''
+  /api/schema/:
+    get:
+      operationId: api_schema_retrieve
+      description: Override get method to filter by tags
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      tags:
+      - api
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/schema/app/:
+    get:
+      operationId: api_schema_app_retrieve
+      description: Override get method to filter by tags
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      tags:
+      - api
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/schema/admin/:
+    get:
+      operationId: api_schema_admin_retrieve
+      description: Override get method to filter by tags
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      tags:
+      - api
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/schema/external/:
+    get:
+      operationId: api_schema_external_retrieve
+      description: Override get method to filter by tags
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      tags:
+      - api
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/versions/:
+    get:
+      operationId: api_versions_retrieve
+      description: 사용 가능한 스키마 버전 목록을 반환합니다.
+      tags:
+      - api
+      responses:
+        '200':
+          description: No response body
+  /api/versions/{version}/schema/:
+    get:
+      operationId: api_versions_schema_retrieve
+      description: 버전별 스키마를 제공하고, 신규/수정된 엔드포인트에 딱지를 표시합니다.
+      parameters:
+      - in: path
+        name: version
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      responses:
+        '200':
+          description: No response body
+  /api/versions/{version}/schema/{category}/:
+    get:
+      operationId: api_versions_schema_retrieve_2
+      description: 버전별 스키마를 제공하고, 신규/수정된 엔드포인트에 딱지를 표시합니다.
+      parameters:
+      - in: path
+        name: category
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: version
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    PatchedUserRequest:
+      type: object
+      description: 사용자 정보 Serializer
+      properties:
+        username:
+          type: string
+          minLength: 1
+          title: 유저네임
+          maxLength: 50
+        email:
+          type: string
+          format: email
+          nullable: true
+          title: 이메일
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+          description: 비밀번호 (생성 시에만 필요)
+        is_active:
+          type: boolean
+          title: 활성화 여부
+        is_staff:
+          type: boolean
+          title: 스태프 여부
+        is_superuser:
+          type: boolean
+          title: 최상위 사용자 권한
+          description: 해당 사용자에게 모든 권한을 허가합니다.
+    User:
+      type: object
+      description: 사용자 정보 Serializer
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          title: 유저네임
+          maxLength: 50
+        email:
+          type: string
+          format: email
+          nullable: true
+          title: 이메일
+          maxLength: 254
+        is_active:
+          type: boolean
+          title: 활성화 여부
+        is_staff:
+          type: boolean
+          title: 스태프 여부
+        is_superuser:
+          type: boolean
+          title: 최상위 사용자 권한
+          description: 해당 사용자에게 모든 권한을 허가합니다.
+        registered_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 가입일시
+        deactivated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          title: 비활성화일시
+      required:
+      - deactivated_at
+      - id
+      - registered_at
+      - username
+    UserList:
+      type: object
+      description: 사용자 목록용 간단한 Serializer (비밀번호 제외)
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          title: 유저네임
+          maxLength: 50
+        email:
+          type: string
+          format: email
+          nullable: true
+          title: 이메일
+          maxLength: 254
+        is_active:
+          type: boolean
+          title: 활성화 여부
+        is_staff:
+          type: boolean
+          title: 스태프 여부
+        registered_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 가입일시
+        deactivated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          title: 비활성화일시
+      required:
+      - deactivated_at
+      - id
+      - registered_at
+      - username
+    UserRequest:
+      type: object
+      description: 사용자 정보 Serializer
+      properties:
+        username:
+          type: string
+          minLength: 1
+          title: 유저네임
+          maxLength: 50
+        email:
+          type: string
+          format: email
+          nullable: true
+          title: 이메일
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+          description: 비밀번호 (생성 시에만 필요)
+        is_active:
+          type: boolean
+          title: 활성화 여부
+        is_staff:
+          type: boolean
+          title: 스태프 여부
+        is_superuser:
+          type: boolean
+          title: 최상위 사용자 권한
+          description: 해당 사용자에게 모든 권한을 허가합니다.
+      required:
+      - password
+      - username
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid

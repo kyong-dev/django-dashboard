@@ -7,6 +7,7 @@ Base Schema View
 import json
 from typing import Any
 
+from constance import config  # type: ignore[import-untyped]
 from drf_spectacular.generators import SchemaGenerator
 from drf_spectacular.views import SpectacularAPIView
 from rest_framework.response import Response
@@ -34,6 +35,9 @@ class CategoryAPISchemaView(SpectacularAPIView):
 
         generator = SchemaGenerator(patterns=None)
         schema = generator.get_schema(request=request, public=True)
+
+        # constance에서 API 버전 동적 적용
+        schema["info"]["version"] = config.API_VERSION
 
         # 스키마 제목과 설명 변경
         if self.schema_title:

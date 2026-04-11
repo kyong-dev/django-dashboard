@@ -98,11 +98,11 @@ def mark_changes(
             summary = operation.get("summary", "")
             description = operation.get("description", "")
 
-            if key in new_endpoints and not summary.startswith("🆕"):
-                operation["summary"] = f"🆕 {summary}"
+            if key in new_endpoints and not summary.startswith("🟢"):
+                operation["summary"] = f"🟢 {summary}"
                 operation["description"] = f"**`NEW in this version`**\n\n{description}"
-            elif key in modified_endpoints and not summary.startswith("✏️"):
-                operation["summary"] = f"✏️ {summary}"
+            elif key in modified_endpoints and not summary.startswith("🟡"):
+                operation["summary"] = f"🟡 {summary}"
                 operation["description"] = f"**`UPDATED in this version`**\n\n{description}"
     return schema
 
@@ -193,6 +193,17 @@ class VersionedSchemaAPIView(APIView):
                 "removed": len(changelog.get("removed", [])),
             }
 
+        # 카테고리 링크 추가
+        category_links = (
+            f"\n\n### 🔗 관련 API 문서 (v{version})\n"
+            f"- **[📋 전체 API](/swagger/versions/{version}/)** - 모든 API\n"
+            f"- **[📱 App API](/swagger/versions/{version}/app/)** - 앱 서비스\n"
+            f"- **[🛠️ Admin API](/swagger/versions/{version}/admin/)** - 관리자\n"
+            f"- **[🌐 External API](/swagger/versions/{version}/external/)** - 외부 연동\n"
+        )
+        description = schema["info"].get("description", "")
+        schema["info"]["description"] = description + category_links
+
         return Response(schema)
 
 
@@ -229,10 +240,12 @@ class VersionedSwaggerView(SpectacularSwaggerView):
         # url_name 기반 reverse를 우회하기 위해 직접 schema_url 설정
         context = super().get_context_data(**kwargs)
         version = self.kwargs.get("version", "")
+        category = self.kwargs.get("category")
         versions = get_available_versions()
         context.update(
             {
                 "current_version": version,
+                "current_category": category or "",
                 "available_versions": versions,
                 "is_versioned": True,
                 "schema_url": self._get_schema_url(self.request),
@@ -257,10 +270,12 @@ class VersionedRedocView(SpectacularRedocView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         version = self.kwargs.get("version", "")
+        category = self.kwargs.get("category")
         versions = get_available_versions()
         context.update(
             {
                 "current_version": version,
+                "current_category": category or "",
                 "available_versions": versions,
                 "is_versioned": True,
                 "schema_url": self._get_schema_url(self.request),

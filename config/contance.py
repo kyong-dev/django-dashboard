@@ -56,6 +56,7 @@ CONSTANCE_CONFIG = {
     # 사이트 기본 설정
     "SITE_NAME": ("My Platform", _("사이트 이름"), str),
     "SITE_DESCRIPTION": ("", _("사이트 설명"), str),
+    "API_VERSION": ("1.0.0", _("API 버전 (예: 1.0.0)"), str),
     "DEFAULT_LANGUAGE": ("ko", _("기본 언어"), "language_select"),
     "MAINTENANCE_MODE": (False, _("점검 모드 활성화"), bool),
     # 사용자 설정
@@ -73,7 +74,7 @@ CONSTANCE_CONFIG_FIELDSETS = (
     (
         _("사이트 설정"),
         {
-            "fields": ("SITE_NAME", "SITE_DESCRIPTION", "DEFAULT_LANGUAGE", "MAINTENANCE_MODE"),
+            "fields": ("SITE_NAME", "SITE_DESCRIPTION", "API_VERSION", "DEFAULT_LANGUAGE", "MAINTENANCE_MODE"),
             "collapse": False,
         },
     ),
