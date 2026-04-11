@@ -76,9 +76,14 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_extensions",
     "constance",
+    "djmoney",
     "storages",
     "user",
 ]
+
+# django-money 설정
+DEFAULT_CURRENCY = "KRW"
+CURRENCIES = ("KRW", "USD", "EUR", "GBP", "JPY", "CNY", "AUD", "CAD", "AUD")
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",

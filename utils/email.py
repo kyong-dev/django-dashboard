@@ -17,7 +17,7 @@ class EmailUtils:
     """이메일 전송 유틸리티 클래스"""
 
     # 기본 설정
-    DEFAULT_FROM_EMAIL = settings.DEFAULT_FROM_EMAIL
+    DEFAULT_FROM_EMAIL: str = getattr(settings, "DEFAULT_FROM_EMAIL", "")
     VERIFICATION_CODE_TIMEOUT = 300  # 5분
     PASSWORD_RESET_TIMEOUT = 1800  # 30분
     PLATFORM_NAME = getattr(settings, "PLATFORM_NAME", "플랫폼")

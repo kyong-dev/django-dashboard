@@ -34,6 +34,22 @@ CONSTANCE_ADDITIONAL_FIELDS = {
             ),
         },
     ],
+    "currency_select": [
+        "django.forms.fields.ChoiceField",
+        {
+            "widget": "unfold.widgets.UnfoldAdminSelectWidget",
+            "choices": (
+                ("KRW", "KRW (\uc6d0)"),
+                ("USD", "USD ($)"),
+                ("EUR", "EUR (\u20ac)"),
+                ("GBP", "GBP (\u00a3)"),
+                ("JPY", "JPY (\u00a5)"),
+                ("CNY", "CNY (\u00a5)"),
+                ("AUD", "AUD ($)"),
+                ("CAD", "CAD ($)"),
+            ),
+        },
+    ],
 }
 
 CONSTANCE_CONFIG = {
@@ -45,6 +61,8 @@ CONSTANCE_CONFIG = {
     "MAX_LOGIN_ATTEMPTS": (5, _("최대 로그인 시도 횟수"), int),
     "SESSION_TIMEOUT_MINUTES": (3600, _("세션 타임아웃 (분)"), int),
     "ALLOW_REGISTRATION": (True, _("회원가입 허용"), bool),
+    # 화폐 설정
+    "DEFAULT_CURRENCY": ("KRW", _("기본 화폐"), "currency_select"),
     # 이메일 설정
     "WELCOME_EMAIL_ENABLED": (True, _("가입 환영 이메일 발송"), bool),
     "SUPPORT_EMAIL": ("support@example.com", _("고객지원 이메일"), str),
@@ -62,6 +80,13 @@ CONSTANCE_CONFIG_FIELDSETS = (
         _("사용자 설정"),
         {
             "fields": ("MAX_LOGIN_ATTEMPTS", "SESSION_TIMEOUT_MINUTES", "ALLOW_REGISTRATION"),
+            "collapse": False,
+        },
+    ),
+    (
+        _("화폐 설정"),
+        {
+            "fields": ("DEFAULT_CURRENCY",),
             "collapse": False,
         },
     ),
