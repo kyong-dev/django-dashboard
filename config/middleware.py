@@ -36,4 +36,3 @@ class Admin404RedirectMiddleware:
         if response.status_code == 404 and request.path.startswith("/admin/"):
             return redirect(settings.ADMIN_REDIRECT_URL)
         return response
-        return response
